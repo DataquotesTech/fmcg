@@ -1,0 +1,54 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { getNetworkStats } from "../data/mockData";
+
+export default function StatsSection() {
+  const [stats, setStats] = useState({
+    blogsHosted: "15,000+",
+    happyCustomers: "25,000+",
+    serversRunning: "1,200+",
+  });
+
+  useEffect(() => {
+    const networkStats = getNetworkStats();
+    setStats(networkStats);
+  }, []);
+
+  const statsArray = [
+    {
+      label: "Blogs Hosted",
+      value: stats.blogsHosted,
+    },
+    {
+      label: "Happy Customers",
+      value: stats.happyCustomers,
+    },
+    {
+      label: "Servers Running",
+      value: stats.serversRunning,
+    },
+  ];
+
+  return (
+    <section className="w-full py-20 md:py-24 lg:py-28 bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+          {statsArray.map((stat, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl p-12 md:p-14 lg:p-16 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 text-center"
+            >
+              <p className="text-base md:text-lg font-semibold text-gray-600 mb-8 md:mb-10 uppercase tracking-wide">
+                {stat.label}
+              </p>
+              <p className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-gray-900">
+                {stat.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
