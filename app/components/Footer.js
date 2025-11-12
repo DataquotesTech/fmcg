@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="w-full bg-white border-t-2 border-gray-200 mt-20 md:mt-28 lg:mt-32">
@@ -72,7 +74,8 @@ export default function Footer() {
           </div>
 
           {/* Right Column - Follow Us */}
-          <div>
+          <div className="flex flex-col justify-between">
+            <div>
             <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-5">
               Follow Us
             </h3>
@@ -121,6 +124,16 @@ export default function Footer() {
                   <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
                 </svg>
               </a>
+            </div>
+            </div>
+
+            <div>
+            <Link
+                href="/admin/login"
+                className="w-full font-semibold text-sm underline text-secondary hover:text-primary"
+              >
+                Admin Panel
+              </Link>
             </div>
           </div>
         </div>

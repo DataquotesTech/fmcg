@@ -1,51 +1,100 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getBlogs, saveBlogs, blogCategories } from "../../data/mockData";
+import { getBlogs, updateBlog, blogCategories } from "../../data/mockData";
+import Modal from "../../components/Modal";
 
 export default function ManageTrending() {
   const [blogs, setBlogs] = useState([]);
   const [selectedTrending, setSelectedTrending] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   useEffect(() => {
-    const allBlogs = getBlogs();
-    setBlogs(allBlogs);
-
-    // Initialize selected trending blogs
-    const trending = {};
-    blogCategories.forEach((category) => {
-      const blog = allBlogs.find((b) => b.trending && b.category === category);
-      if (blog) trending[category] = blog.id;
-    });
-    setSelectedTrending(trending);
+    loadBlogs();
   }, []);
 
-  const handleCategoryChange = (category, blogId) => {
-    const updatedTrending = { ...selectedTrending, [category]: parseInt(blogId) };
+  const loadBlogs = async () => {
+    try {
+      const allBlogs = await getBlogs();
+      setBlogs(allBlogs);
+
+      // Initialize selected trending blogs
+      const trending = {};
+      blogCategories.forEach((category) => {
+        const blog = allBlogs.find(
+          (b) => b.trending && b.category === category
+        );
+        if (blog) trending[category] = blog.id;
+      });
+      setSelectedTrending(trending);
+    } catch (error) {
+      console.error("Error loading blogs:", error);
+    }
+  };
+
+  const handleCategoryChange = async (category, blogId) => {
+    const updatedTrending = {
+      ...selectedTrending,
+      [category]: parseInt(blogId),
+    };
+    setSelectedTrending(updatedTrending);
 
     // Remove trending flag from all blogs in this category
-    const updatedBlogs = blogs.map((blog) => {
-      if (blog.category === category) {
-        return { ...blog, trending: false };
-      }
-      return blog;
-    });
-
-    // Set new trending blog
-    if (blogId) {
-      const blogIndex = updatedBlogs.findIndex((b) => b.id === parseInt(blogId));
-      if (blogIndex !== -1) {
-        updatedBlogs[blogIndex].trending = true;
+    const categoryBlogs = blogs.filter(
+      (blog) => blog.category === category && blog.trending
+    );
+    for (const blog of categoryBlogs) {
+      try {
+        await updateBlog(blog.id, { ...blog, trending: false });
+      } catch (error) {
+        console.error("Error updating blog:", error);
       }
     }
 
-    setSelectedTrending(updatedTrending);
-    setBlogs(updatedBlogs);
+    // Set new trending blog
+    if (blogId) {
+      const blogToTrend = blogs.find((b) => b.id === parseInt(blogId));
+      if (blogToTrend) {
+        try {
+          await updateBlog(blogToTrend.id, { ...blogToTrend, trending: true });
+        } catch (error) {
+          console.error("Error updating blog:", error);
+        }
+      }
+    }
+
+    await loadBlogs();
   };
 
-  const handleSave = () => {
-    saveBlogs(blogs);
-    alert("Trending blogs updated successfully!");
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      // The updates are already done in handleCategoryChange
+      // Just reload to ensure consistency
+      await loadBlogs();
+      setModalConfig({
+        title: "Success",
+        message: "Trending blogs updated successfully!",
+        type: "success",
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error saving trending blogs:", error);
+      setModalConfig({
+        title: "Error",
+        message: "An error occurred while saving. Please try again.",
+        type: "error",
+      });
+      setShowModal(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getCategoryBlogs = (category) => {
@@ -59,7 +108,8 @@ export default function ManageTrending() {
           Manage Trending
         </h1>
         <p className="text-gray-600 text-base md:text-lg">
-          Select one trending blog for each category. Only one blog can be trending per category.
+          Select one trending blog for each category. Only one blog can be
+          trending per category.
         </p>
       </div>
 
@@ -69,7 +119,7 @@ export default function ManageTrending() {
           return (
             <div
               key={category}
-              className="bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-gray-200"
+              className="bg-white rounded  p-4  border-2 border-primary"
             >
               <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
                 {category}
@@ -80,7 +130,9 @@ export default function ManageTrending() {
                 </label>
                 <select
                   value={selectedTrending[category] || ""}
-                  onChange={(e) => handleCategoryChange(category, e.target.value)}
+                  onChange={(e) =>
+                    handleCategoryChange(category, e.target.value)
+                  }
                   className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 >
                   <option value="">-- Select a blog --</option>
@@ -104,11 +156,20 @@ export default function ManageTrending() {
       <div className="mt-8 flex justify-end">
         <button
           onClick={handleSave}
-          className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          disabled={loading}
+          className="px-8 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold  hover: transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Save Changes
+          {loading ? "Saving..." : "Save Changes"}
         </button>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        type={modalConfig.type}
+      />
     </div>
   );
 }

@@ -7,51 +7,54 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="w-full bg-white border-b-2 border-gray-200 sticky top-0 z-50 shadow-md">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-10 max-w-7xl">
-        <div className="flex items-center justify-between h-20 md:h-24">
+    <header className="w-full sticky top-0 z-50  flex items-center justify-center border-b-2 border-primary bg-secondary">
+      <div className="w-full ">
+        <div className="flex items-center justify-between h-15">
           {/* Logo */}
-          <div className="shrink-0">
-            <Link
-              href="/"
-              className="text-2xl sm:text-3xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
-            >
-              FMCG Influencer.com
-            </Link>
+          <div className="flex border-r-2 h-full items-center justify-center px-6 hover:bg-primary hover:text-secondary transition-all duration-300">
+            <div className="shrink-0  px-2 py-2 rounded-2xl">
+              <Link href="/" className="text-xl sm:text-3xl font-bold py-10">
+                FMCG Influencer.com
+              </Link>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8 lg:space-x-10 xl:space-x-12">
-            <a
-              href="#"
-              className="text-gray-700 hover:text-gray-900 font-semibold text-base lg:text-lg transition-colors"
-            >
-              Blog
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-gray-900 font-semibold text-base lg:text-lg transition-colors"
-            >
-              Services
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-gray-900 font-semibold text-base lg:text-lg transition-colors"
-            >
-              Network
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-gray-900 font-semibold text-base lg:text-lg transition-colors"
-            >
-              About
-            </a>
-            <a
-              href="/admin/login"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all font-semibold shadow-md hover:shadow-lg text-base lg:text-lg"
-            >
-              Register
-            </a>
+          <nav className="hidden md:flex items-center  text-secondary  h-full relative left-2">
+            <div className="flex items-center  text-primary h-full bg-primary border-primary">
+              <a
+                href="#"
+                className="font-semibold text-base lg:text-lg px-6 bg-secondary  hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-x-2 flex items-center justify-self-center"
+              >
+                <span>Blog</span>
+              </a>
+              <a
+                href="#"
+                className="font-semibold text-base lg:text-lg px-6 bg-secondary  hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-r-2 flex items-center justify-self-center"
+              >
+                <span>Services</span>
+              </a>
+              <a
+                href="#"
+                className="font-semibold text-base lg:text-lg px-6 bg-secondary  hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-r-2 flex items-center justify-self-center"
+              >
+                <span>Network</span>
+              </a>
+              <a
+                href="#"
+                className="font-semibold text-base lg:text-lg px-6 bg-secondary  hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-r-2 flex items-center justify-self-center"
+              >
+                <span>About</span>
+              </a>
+            </div>
+            <div className="flex items-center  h-full bg-primary border-primary border-2 ">
+              <a
+                href="/register"
+                className="font-semibold text-base lg:text-lg px-14 bg-primary  hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-r-2 flex items-center justify-self-center"
+              >
+                Register
+              </a>
+            </div>
           </nav>
 
           {/* Mobile menu button */}
@@ -121,8 +124,8 @@ export default function Header() {
                 About
               </a>
               <a
-                href="/admin/login"
-                className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-center shadow-md mt-2"
+                href="/register"
+                className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-center  mt-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Register

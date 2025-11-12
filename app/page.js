@@ -6,7 +6,14 @@ import Footer from "./components/Footer";
 import CategoryNav from "./components/CategoryNav";
 import BlogCard from "./components/BlogCard";
 import StatsSection from "./components/StatsSection";
-import { getBlogs, blogCategories } from "./data/mockData";
+import AboutSection from "./components/AboutSection";
+import ServicesSection from "./components/ServicesSection";
+import {
+  getBlogsByCategory,
+  getFeaturedBlog,
+  getTrendingBlog,
+  blogCategories,
+} from "./data/mockData";
 import Link from "next/link";
 
 export default function Home() {
@@ -15,23 +22,27 @@ export default function Home() {
   const [featuredBlog, setFeaturedBlog] = useState(null);
   const [trendingBlog, setTrendingBlog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load blogs and set featured/trending
-    const loadBlogs = () => {
-      const allBlogs = getBlogs();
-      setBlogs(allBlogs);
+    const loadBlogs = async () => {
+      setLoading(true);
+      try {
+        const [allBlogs, featured, trending] = await Promise.all([
+          getBlogsByCategory(activeCategory),
+          getFeaturedBlog(activeCategory),
+          getTrendingBlog(activeCategory),
+        ]);
 
-      // Find featured and trending blogs for the active category
-      const featured = allBlogs.find(
-        (b) => b.featured && b.category === activeCategory
-      );
-      const trending = allBlogs.find(
-        (b) => b.trending && b.category === activeCategory
-      );
-
-      setFeaturedBlog(featured || null);
-      setTrendingBlog(trending || null);
+        setBlogs(allBlogs);
+        setFeaturedBlog(featured);
+        setTrendingBlog(trending);
+      } catch (error) {
+        console.error("Error loading blogs:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadBlogs();
@@ -42,11 +53,8 @@ export default function Home() {
     setCurrentPage(1);
   };
 
-  // Filter blogs by active category and exclude featured/trending
-  const filteredBlogs = blogs.filter(
-    (blog) =>
-      blog.category === activeCategory && !blog.featured && !blog.trending
-  );
+  // Blogs are already filtered by category and exclude featured/trending
+  const filteredBlogs = blogs;
 
   // Determine blogs per page: 3 if both featured and trending exist, otherwise 6
   const blogsPerPage = featuredBlog && trendingBlog ? 3 : 6;
@@ -110,15 +118,47 @@ export default function Home() {
   };
 
   const getImagePlaceholder = (imageType, index) => {
+    // Check if imageType is a URL (starts with http:// or https://)
+    if (
+      imageType &&
+      (imageType.startsWith("http://") || imageType.startsWith("https://"))
+    ) {
+      return (
+        <img
+          key={`img-${index}`}
+          src={imageType}
+          alt="Blog image"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            // Hide broken image and show placeholder
+            e.target.style.display = "none";
+            const parent = e.target.parentElement;
+            if (parent) {
+              const placeholder = document.createElement("div");
+              placeholder.className =
+                "w-full h-full bg-orange-50 flex items-center justify-center relative overflow-hidden";
+              placeholder.innerHTML = `
+                <div class="absolute inset-0 bg-linear-to-br from-orange-100 to-orange-200"></div>
+                <svg class="w-20 h-20 text-orange-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z" />
+                </svg>
+              `;
+              parent.appendChild(placeholder);
+            }
+          }}
+        />
+      );
+    }
+
     const type = imageType || ["orange", "red", "teal"][index % 3];
 
     if (type === "orange") {
       return (
         <div
           key={`orange-${index}`}
-          className="w-full h-full bg-orange-50 flex items-center justify-center relative overflow-hidden"
+          className="w-full h-full bg-background flex items-center justify-center relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-orange-200"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-orange-100 to-orange-200"></div>
           <svg
             className="w-20 h-20 text-orange-300 relative z-10"
             fill="currentColor"
@@ -132,15 +172,52 @@ export default function Home() {
       return (
         <div
           key={`red-${index}`}
-          className="w-full h-full bg-gray-900 flex items-center justify-center relative overflow-hidden"
+          className="w-full h-full bg-linear-to-br from-red-500 via-red-600 to-red-700 flex items-center justify-center relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black"></div>
-          <span
-            className="text-3xl md:text-4xl font-bold text-red-500 relative z-10 tracking-wider"
-            style={{ textShadow: "0 0 20px rgba(239, 68, 68, 0.5)" }}
-          >
-            Marketing
-          </span>
+          <div className="absolute inset-0 bg-linear-to-br from-red-600 to-red-800 opacity-90"></div>
+          <div className="relative z-10 flex items-center justify-center">
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
+              <svg
+                className="w-12 h-12 md:w-16 md:h-16 text-white opacity-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+              <svg
+                className="w-12 h-12 md:w-16 md:h-16 text-white opacity-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              <svg
+                className="w-12 h-12 md:w-16 md:h-16 text-white opacity-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
       );
     } else {
@@ -149,7 +226,7 @@ export default function Home() {
           key={`teal-${index}`}
           className="w-full h-full bg-teal-900 flex items-center justify-center relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-900 to-teal-800"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-teal-900 to-teal-800"></div>
           <div className="grid grid-cols-2 gap-6 text-teal-300 relative z-10">
             <svg
               className="w-10 h-10 opacity-80"
@@ -186,26 +263,26 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen ">
       <Header />
 
       {/* Hero Section */}
-      <section className="w-full py-24 md:py-32 lg:py-40 px-6 sm:px-8 lg:px-10">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-12">
+      <section className="w-full py-18 px-6 sm:px-8 lg:px-10">
+        <div className="container mx-auto flex flex-col items-center justify-center">
+          <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-5">
             <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community
             </h1>
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center pt-6">
               <Link
-                href="/admin/login"
-                className="w-full sm:w-auto bg-blue-600 text-white px-10 py-4.5 rounded-lg hover:bg-blue-700 transition-all font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                href="/register"
+                className="w-full sm:w-auto bg-primary text-secondary px-15 py-4.5 hover:bg-secondary border-2 border-primary transition-all font-semibold text-lg  hover:text-primary"
               >
                 Register
               </Link>
               <a
                 href="#blogs"
-                className="w-full sm:w-auto bg-white text-gray-900 px-10 py-4.5 rounded-lg hover:bg-gray-50 transition-all font-semibold text-lg border-2 border-gray-200 hover:border-gray-300 shadow-md hover:shadow-lg"
+                className="w-full sm:w-auto  text-primary border-2 border-primary px-10 py-4.5 font-semibold text-lg"
               >
                 Explore Blogs
               </a>
@@ -230,48 +307,39 @@ export default function Home() {
           {(featuredBlog || trendingBlog) && (
             <div className="mb-20 md:mb-24 lg:mb-32">
               {featuredBlog && trendingBlog ? (
-                // Both exist - Show side by side as cards
+                // Both exist - Show side by side as cards (Trending on left)
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16">
-                  {/* Featured Blog Card */}
-                  <Link
-                    href={`/blog/${featuredBlog.id}`}
-                    className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
-                  >
-                    <div className="relative">
-                      <div className="absolute top-5 left-5 z-10">
-                        <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full shadow-lg tracking-wide uppercase">
-                          Featured
-                        </span>
-                      </div>
-                      <div className="w-full h-64 md:h-80 lg:h-96">
-                        {getImagePlaceholder(
-                          featuredBlog.image,
-                          featuredBlog.id
-                        )}
-                      </div>
-                    </div>
-                    <div className="p-8 md:p-10">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-                        {featuredBlog.title}
-                      </h2>
-                      <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                        {featuredBlog.description}
-                      </p>
-                    </div>
-                  </Link>
-
-                  {/* Trending Blog Card */}
+                  {/* Trending Blog Card - Left Side */}
                   <Link
                     href={`/blog/${trendingBlog.id}`}
-                    className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+                    className="bg-white rounded overflow-hidden border-2 border-primary transition-all duration-300 cursor-pointer group relative "
                   >
+                    {/* Northeast Arrow - Top Right */}
+                    <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-gray-400 group-hover:text-secondary transition-colors"
+                      >
+                        <path
+                          d="M5 19L19 5M19 5H13M19 5V11"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
                     <div className="relative">
-                      <div className="absolute top-5 right-5 z-10">
-                        <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full shadow-lg tracking-wide uppercase">
+                      <div className="absolute top-5 left-5 z-10">
+                        <span className="inline-block bg-blue-100 text-blue-400 text-xs font-bold px-4 py-2 rounded  tracking-wide uppercase border">
                           Trending
                         </span>
                       </div>
-                      <div className="w-full h-64 md:h-80 lg:h-96">
+                      <div className="w-full h-64 md:h-80 lg:h-80">
                         {getImagePlaceholder(
                           trendingBlog.image,
                           trendingBlog.id
@@ -279,11 +347,58 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-8 md:p-10">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
                         {trendingBlog.title}
                       </h2>
                       <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                         {trendingBlog.description}
+                      </p>
+                    </div>
+                  </Link>
+
+                  {/* Featured Blog Card - Right Side */}
+                  <Link
+                    href={`/blog/${featuredBlog.id}`}
+                    className="bg-white rounded overflow-hidden border-2 border-primary  transition-all duration-300 cursor-pointer group relative"
+                  >
+                    {/* Northeast Arrow - Top Right */}
+                    <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-gray-400 group-hover:text-secondary transition-colors"
+                      >
+                        <path
+                          d="M5 19L19 5M19 5H13M19 5V11"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute top-5 left-5 z-10">
+                        <span className="inline-block bg-orange-100 text-orange-400 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase border">
+                          Featured
+                        </span>
+                      </div>
+                      <div className="w-full h-64 md:h-80 lg:h-80">
+                        {getImagePlaceholder(
+                          featuredBlog.image,
+                          featuredBlog.id
+                        )}
+                      </div>
+                    </div>
+                    <div className="p-8 md:p-10">
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
+                        {featuredBlog.title}
+                      </h2>
+                      <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                        {featuredBlog.description}
                       </p>
                     </div>
                   </Link>
@@ -292,8 +407,27 @@ export default function Home() {
                 // Only Featured - Full Width
                 <Link
                   href={`/blog/${featuredBlog.id}`}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative"
                 >
+                  {/* Northeast Arrow - Top Right */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                    >
+                      <path
+                        d="M5 19L19 5M19 5H13M19 5V11"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
                   {/* Left Side - Text Content */}
                   <div className="space-y-6 md:space-y-8">
                     <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
@@ -308,7 +442,7 @@ export default function Home() {
                   </div>
 
                   {/* Right Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden ">
                     {getImagePlaceholder(featuredBlog.image, featuredBlog.id)}
                   </div>
                 </Link>
@@ -316,10 +450,29 @@ export default function Home() {
                 // Only Trending - Full Width
                 <Link
                   href={`/blog/${trendingBlog.id}`}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative"
                 >
+                  {/* Northeast Arrow - Top Right */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                    >
+                      <path
+                        d="M5 19L19 5M19 5H13M19 5V11"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
                   {/* Left Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden ">
                     {getImagePlaceholder(trendingBlog.image, trendingBlog.id)}
                   </div>
 
@@ -340,14 +493,14 @@ export default function Home() {
             </div>
           )}
 
-          {/* Section Title */}
+          {/* Section Title
           {filteredBlogs.length > 0 && (
             <div className="mb-12 md:mb-16 text-center">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
                 Heading of the blog
               </h2>
             </div>
-          )}
+          )} */}
 
           {/* General Blog Posts Grid */}
           {filteredBlogs.length > 0 ? (
@@ -374,10 +527,10 @@ export default function Home() {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded-lg ${
+                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
                       currentPage === 1
                         ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
                     }`}
                   >
                     prev
@@ -399,9 +552,9 @@ export default function Home() {
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`px-6 md:px-7 py-2.5 md:py-3 text-base font-semibold rounded-lg transition-all ${
+                        className={`px-6 md:px-7 py-2.5 md:py-3 text-base font-semibold rounded transition-all ${
                           currentPage === page
-                            ? "bg-blue-600 text-white shadow-md hover:shadow-lg"
+                            ? "bg-primary text-secondary "
                             : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                         }`}
                       >
@@ -414,10 +567,10 @@ export default function Home() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded-lg ${
+                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
                       currentPage === totalPages
                         ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
                     }`}
                   >
                     next
@@ -455,6 +608,12 @@ export default function Home() {
 
       {/* Stats/Network Section */}
       <StatsSection />
+
+      {/* About Section */}
+      <AboutSection />
+
+      {/* Services Section */}
+      <ServicesSection />
 
       <Footer />
     </div>

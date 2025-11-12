@@ -2,30 +2,104 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { supabase } from "../../../lib/supabase";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Redirect to admin panel on login
-    router.push("/admin/create");
+    setError("");
+    setLoading(true);
+
+    try {
+      // Try Supabase Auth first
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (authError) {
+        // Fallback to hardcoded credentials for backward compatibility
+        if (email === "FMCG@gmail.com" && password === "123456") {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("isAuthenticated", "true");
+            sessionStorage.setItem("adminEmail", email);
+          }
+          router.push("/admin/create");
+          return;
+        }
+        setError("Invalid email or password. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      // Check if user is an admin
+      const { data: adminUser, error: adminError } = await supabase
+        .from("admin_users")
+        .select("*")
+        .eq("id", authData.user.id)
+        .eq("is_active", true)
+        .single();
+
+      if (adminError || !adminUser) {
+        // If not in admin_users table, still allow if using hardcoded credentials
+        if (email === "FMCG@gmail.com" && password === "123456") {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("isAuthenticated", "true");
+            sessionStorage.setItem("adminEmail", email);
+          }
+          await supabase.auth.signOut();
+          router.push("/admin/create");
+          return;
+        }
+        await supabase.auth.signOut();
+        setError("You don't have admin access.");
+        setLoading(false);
+        return;
+      }
+
+      // Store authentication in sessionStorage
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("isAuthenticated", "true");
+        sessionStorage.setItem("adminEmail", email);
+        sessionStorage.setItem("adminId", authData.user.id);
+      }
+
+      // Redirect to admin panel on successful login
+      router.push("/admin/create");
+    } catch (err) {
+      console.error("Login error:", err);
+      // Fallback to hardcoded credentials
+      if (email === "FMCG@gmail.com" && password === "123456") {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("isAuthenticated", "true");
+          sessionStorage.setItem("adminEmail", email);
+        }
+        router.push("/admin/create");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-50 to-blue-100 flex items-center justify-center p-4 md:p-6"
-      style={{ border: "2px solid #AECDEE" }}
-    >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 md:p-10 lg:p-12">
+    <div className="flex items-center justify-center p-4 md:p-6 h-screen">
+      <div className="w-full max-w-2xl  border-2 border-primary p-8 md:p-10 lg:p-12 ">
         {/* Icon */}
         <div className="flex justify-center mb-8">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center ">
             <svg
-              className="w-8 h-8 text-blue-600"
+              className="w-6 h-6 text-blue-600"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -39,12 +113,21 @@ export default function AdminLogin() {
         </div>
 
         {/* Title */}
-        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center mb-4">
+        <h1 className="font-inter text-5xl  font-bold text-gray-900 text-center mb-4">
           Admin Login
         </h1>
-        <p className="text-gray-600 text-center text-base md:text-lg mb-10">
+        <p className="text-gray-600 text-center text-sm md:text-sm mb-10">
           Welcome back, please enter your details.
         </p>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+            <p className="text-red-600 text-sm font-semibold text-center">
+              {error}
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -144,7 +227,7 @@ export default function AdminLogin() {
             </div>
           </div>
 
-          {/* Forgot Password */}
+          {/* Forgot Password
           <div className="flex justify-end">
             <a
               href="#"
@@ -152,28 +235,29 @@ export default function AdminLogin() {
             >
               Forgot your password?
             </a>
-          </div>
+          </div> */}
 
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 transition-all font-bold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            disabled={loading}
+            className="w-full bg-primary text-secondary py-4 rounded-xl hover:bg-primary/70 cursor-pointer hover:text-secondary transition-all font-bold text-base md:text-lg  transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {/* Copyright */}
         <p className="text-center text-gray-500 text-xs md:text-sm mt-8">
-          © 2024 FMCG Influencer. All Rights Reserved.
+          © 2026 FMCG Influencer. All Rights Reserved.
         </p>
         <div className="text-center mt-6">
-          <a
+          <Link
             href="/"
             className="text-sm md:text-base text-blue-600 hover:text-blue-700 font-semibold transition-colors"
           >
             ← Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

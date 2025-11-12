@@ -5,6 +5,7 @@ export const blogCategories = [
   "Distribution Blogs",
   "Wholesaler Blogs",
   "Retailer Blogs",
+  "Aspirant Blogs",
 ];
 
 export const blogTypes = [
@@ -12,6 +13,7 @@ export const blogTypes = [
   "Wholesaler Blog",
   "Retailer Blog",
   "Distributor Blog",
+  "Aspirant Blog",
 ];
 
 // Comprehensive mock blogs with content for each category
@@ -645,37 +647,432 @@ export const initialNetworkStats = {
   serversRunning: "1,200+",
 };
 
-// Store data in localStorage helper functions
-export const getBlogs = () => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("blogs");
-    return stored ? JSON.parse(stored) : initialBlogs;
+// Supabase helper functions
+import { supabase } from "../../lib/supabase";
+
+// Get all blogs from Supabase
+export const getBlogs = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching blogs:", error);
+      return initialBlogs; // Fallback to initial data
+    }
+
+    // Transform data to match expected format
+    return (data || []).map((blog) => ({
+      id: blog.id,
+      title: blog.title,
+      description: blog.description,
+      content: blog.content,
+      author: blog.author,
+      category: blog.category,
+      type: blog.type,
+      image: blog.image || "orange",
+      createdAt: blog.created_at
+        ? new Date(blog.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: blog.featured || false,
+      trending: blog.trending || false,
+    }));
+  } catch (error) {
+    console.error("Error in getBlogs:", error);
+    return initialBlogs;
   }
-  return initialBlogs;
 };
 
-export const saveBlogs = (blogs) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("blogs", JSON.stringify(blogs));
+// Get blog by ID
+export const getBlogById = async (id) => {
+  try {
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      author: data.author,
+      category: data.category,
+      type: data.type,
+      image: data.image || "orange",
+      createdAt: data.created_at
+        ? new Date(data.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: data.featured || false,
+      trending: data.trending || false,
+    };
+  } catch (error) {
+    console.error("Error in getBlogById:", error);
+    return null;
   }
 };
 
-export const getNetworkStats = () => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("networkStats");
-    return stored ? JSON.parse(stored) : initialNetworkStats;
+// Get blogs by category (excluding featured and trending)
+export const getBlogsByCategory = async (category) => {
+  try {
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .eq("category", category)
+      .eq("featured", false)
+      .eq("trending", false)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching blogs by category:", error);
+      return [];
+    }
+
+    return (data || []).map((blog) => ({
+      id: blog.id,
+      title: blog.title,
+      description: blog.description,
+      content: blog.content,
+      author: blog.author,
+      category: blog.category,
+      type: blog.type,
+      image: blog.image || "orange",
+      createdAt: blog.created_at
+        ? new Date(blog.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: blog.featured || false,
+      trending: blog.trending || false,
+    }));
+  } catch (error) {
+    console.error("Error in getBlogsByCategory:", error);
+    return [];
   }
-  return initialNetworkStats;
 };
 
-export const saveNetworkStats = (stats) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("networkStats", JSON.stringify(stats));
+// Get featured blog for a category
+export const getFeaturedBlog = async (category) => {
+  try {
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .eq("category", category)
+      .eq("featured", true)
+      .single();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      author: data.author,
+      category: data.category,
+      type: data.type,
+      image: data.image || "orange",
+      createdAt: data.created_at
+        ? new Date(data.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: data.featured || false,
+      trending: data.trending || false,
+    };
+  } catch (error) {
+    return null;
   }
 };
 
-export const getFeaturedBlogs = () => {
-  const blogs = getBlogs();
+// Get trending blog for a category
+export const getTrendingBlog = async (category) => {
+  try {
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .eq("category", category)
+      .eq("trending", true)
+      .single();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      author: data.author,
+      category: data.category,
+      type: data.type,
+      image: data.image || "orange",
+      createdAt: data.created_at
+        ? new Date(data.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: data.featured || false,
+      trending: data.trending || false,
+    };
+  } catch (error) {
+    return null;
+  }
+};
+
+// Save/create a blog
+export const saveBlogs = async (blogs) => {
+  // This function is kept for backward compatibility but now handles single blog creation
+  // For bulk operations, use createBlog or updateBlog directly
+  console.warn(
+    "saveBlogs is deprecated. Use createBlog or updateBlog instead."
+  );
+};
+
+// Create a new blog
+export const createBlog = async (blogData) => {
+  try {
+    let user = null;
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (authError) {
+      // User might not be authenticated, continue without user ID
+      console.log("No authenticated user, creating blog without user ID");
+    }
+
+    // Generate description from HTML content (strip HTML tags)
+    const textContent = blogData.content
+      ? blogData.content.replace(/<[^>]*>/g, " ").trim()
+      : "";
+    const description =
+      blogData.description ||
+      (textContent
+        ? textContent.substring(0, 150) +
+          (textContent.length > 150 ? "..." : "")
+        : "");
+
+    // If no image provided, randomly select from orange, red, or teal
+    const getRandomImage = () => {
+      const options = ["orange", "red", "teal"];
+      return options[Math.floor(Math.random() * options.length)];
+    };
+
+    const blogToInsert = {
+      title: blogData.title,
+      content: blogData.content,
+      description: description,
+      author: blogData.author,
+      category: blogData.category,
+      type: blogData.type,
+      image: blogData.image || getRandomImage(),
+      featured: blogData.featured || false,
+      trending: blogData.trending || false,
+      created_by: user?.id || null,
+    };
+
+    const { data, error } = await supabase
+      .from("blogs")
+      .insert([blogToInsert])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating blog:", error);
+      // Create a more descriptive error
+      const errorMessage = error.message || error.error || "Unknown error";
+      const detailedError = new Error(`Failed to create blog: ${errorMessage}`);
+      detailedError.originalError = error;
+      throw detailedError;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in createBlog:", error);
+    throw error;
+  }
+};
+
+// Update a blog
+export const updateBlog = async (id, blogData) => {
+  try {
+    let user = null;
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (authError) {
+      // User might not be authenticated, continue without user ID
+      console.log("No authenticated user, updating blog without user ID");
+    }
+
+    // Generate description from HTML content (strip HTML tags) if not provided
+    let description = blogData.description;
+    if (!description && blogData.content) {
+      const textContent = blogData.content.replace(/<[^>]*>/g, " ").trim();
+      description =
+        textContent.substring(0, 150) + (textContent.length > 150 ? "..." : "");
+    }
+
+    const updateData = {
+      title: blogData.title,
+      content: blogData.content,
+      description: description,
+      author: blogData.author,
+      category: blogData.category,
+      type: blogData.type,
+      image: blogData.image,
+      featured: blogData.featured,
+      trending: blogData.trending,
+      updated_by: user?.id || null,
+    };
+
+    const { data, error } = await supabase
+      .from("blogs")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating blog:", error);
+      // Create a more descriptive error
+      const errorMessage = error.message || error.error || "Unknown error";
+      const detailedError = new Error(`Failed to update blog: ${errorMessage}`);
+      detailedError.originalError = error;
+      throw detailedError;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in updateBlog:", error);
+    throw error;
+  }
+};
+
+// Delete a blog
+export const deleteBlog = async (id) => {
+  try {
+    const { error } = await supabase.from("blogs").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting blog:", error);
+      throw error;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in deleteBlog:", error);
+    throw error;
+  }
+};
+
+// Get network stats
+export const getNetworkStats = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("network_stats")
+      .select("*")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      return initialNetworkStats;
+    }
+
+    return {
+      blogsHosted: data.blogs_hosted || initialNetworkStats.blogsHosted,
+      happyCustomers:
+        data.happy_customers || initialNetworkStats.happyCustomers,
+      serversRunning:
+        data.servers_running || initialNetworkStats.serversRunning,
+    };
+  } catch (error) {
+    console.error("Error fetching network stats:", error);
+    return initialNetworkStats;
+  }
+};
+
+// Save network stats - only update existing record, don't create new ones
+export const saveNetworkStats = async (stats) => {
+  try {
+    let user = null;
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (authError) {
+      // User might not be authenticated, continue without user ID
+      console.log(
+        "No authenticated user, updating network stats without user ID"
+      );
+    }
+
+    // Get the first existing record (there should only be one)
+    const { data: existingData, error: fetchError } = await supabase
+      .from("network_stats")
+      .select("id")
+      .order("id", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    const updateData = {
+      blogs_hosted: stats.blogsHosted,
+      happy_customers: stats.happyCustomers,
+      servers_running: stats.serversRunning,
+      updated_by: user?.id || null,
+    };
+
+    if (existingData && existingData.id) {
+      // Update the existing record (only one should exist)
+      const { error } = await supabase
+        .from("network_stats")
+        .update(updateData)
+        .eq("id", existingData.id);
+
+      if (error) {
+        console.error("Error updating network stats:", error);
+        throw error;
+      }
+    } else {
+      // No record exists, create one
+      // Try with id=1 first, if that fails due to conflict, just insert without id
+      const { error: insertError } = await supabase
+        .from("network_stats")
+        .insert([{ id: 1, ...updateData }]);
+
+      if (insertError) {
+        // If id=1 fails, try without specifying id (let database auto-generate)
+        const { error: insertError2 } = await supabase
+          .from("network_stats")
+          .insert([updateData]);
+
+        if (insertError2) {
+          console.error("Error creating network stats:", insertError2);
+          throw insertError2;
+        }
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in saveNetworkStats:", error);
+    throw error;
+  }
+};
+
+// Legacy functions for backward compatibility
+export const getFeaturedBlogs = async () => {
+  const blogs = await getBlogs();
   const featured = {};
   blogCategories.forEach((category) => {
     const blog = blogs.find((b) => b.featured && b.category === category);
@@ -684,8 +1081,8 @@ export const getFeaturedBlogs = () => {
   return featured;
 };
 
-export const getTrendingBlogs = () => {
-  const blogs = getBlogs();
+export const getTrendingBlogs = async () => {
+  const blogs = await getBlogs();
   const trending = {};
   blogCategories.forEach((category) => {
     const blog = blogs.find((b) => b.trending && b.category === category);

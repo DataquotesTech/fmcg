@@ -8,6 +8,11 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Don't show admin header on login page
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
   const navItems = [
     { href: "/admin/create", label: "Create Blog" },
     { href: "/admin/edit", label: "Edit Blog" },
@@ -17,59 +22,59 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50" style={{ backgroundColor: "#F8FAFC" }}>
-      {/* Top Dock Navigation */}
-      <nav className="bg-white border-b border-gray-200 shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-18">
+    <div className="min-h-screen">
+      {/* Admin Header - Matching main Header style */}
+      <header className="w-full sticky top-0 z-50 flex items-center justify-center border-b-2 border-primary bg-secondary">
+        <div className="w-full">
+          <div className="flex items-center justify-between h-15">
             {/* Logo */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/admin/create"
-                className="text-xl md:text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
-              >
-                Admin Panel
-              </Link>
+            <div className="flex border-r-2 h-full items-center justify-center px-6 hover:bg-primary hover:text-secondary transition-all duration-300">
+              <div className="shrink-0 px-2 py-2 rounded-2xl">
+                <Link
+                  href="/admin/create"
+                  className="text-xl sm:text-3xl font-bold py-10"
+                >
+                  Admin Panel
+                </Link>
+              </div>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-2">
-              {navItems.map((item) => (
+            <nav className="hidden md:flex items-center text-secondary h-full relative left-2">
+              <div className="flex items-center text-primary h-full bg-primary border-primary">
+                {navItems.map((item, index) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`font-semibold text-base lg:text-lg px-6 transition-all duration-300 h-full flex items-center justify-self-center ${
+                      index === 0 ? "border-x-2" : "border-r-2"
+                    } ${
+                      pathname === item.href
+                        ? "bg-primary text-secondary"
+                        : "bg-secondary hover:bg-primary hover:text-secondary"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+              <div className="flex items-center h-full bg-primary border-primary border-2">
                 <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    pathname === item.href
-                      ? "bg-blue-600 text-white shadow-md"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  href="/"
+                  className="font-semibold text-base lg:text-lg px-14 bg-primary hover:bg-primary hover:text-secondary transition-all duration-300 h-full border-r-2 flex items-center justify-self-center"
                 >
-                  {item.label}
+                  View Site
                 </Link>
-              ))}
-            </div>
+              </div>
+            </nav>
 
-            {/* Right side - Logout and Home */}
-            <div className="flex items-center gap-3 md:gap-4">
-              <Link
-                href="/"
-                className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                View Site
-              </Link>
-              <Link
-                href="/admin/login"
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-semibold"
-              >
-                Logout
-              </Link>
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
-                aria-label="Toggle menu"
-              >
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2.5 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -79,29 +84,37 @@ export default function AdminLayout({ children }) {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  {isMobileMenuOpen ? (
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                  )}
+                  <path d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
-            </div>
+              ) : (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden py-4 border-t border-gray-200">
-              <div className="flex flex-col space-y-2">
+            <nav className="md:hidden py-6 border-t-2 border-gray-200">
+              <div className="flex flex-col space-y-4">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
+                    className={`font-semibold py-3 transition-colors text-base ${
                       pathname === item.href
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-gray-700 hover:bg-gray-100"
+                        ? "text-primary bg-secondary"
+                        : "text-gray-700 hover:text-gray-900"
                     }`}
                   >
                     {item.label}
@@ -110,15 +123,15 @@ export default function AdminLayout({ children }) {
                 <Link
                   href="/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                  className="text-gray-700 hover:text-gray-900 font-semibold py-3 transition-colors text-base"
                 >
                   View Site
                 </Link>
               </div>
-            </div>
+            </nav>
           )}
         </div>
-      </nav>
+      </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12 max-w-7xl">

@@ -1,5 +1,6 @@
-import { Playfair_Display, Inter } from "next/font/google";
+import { Playfair_Display, Host_Grotesk } from "next/font/google";
 import "./globals.css";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-serif",
@@ -7,7 +8,7 @@ const playfairDisplay = Playfair_Display({
   display: "swap",
 });
 
-const inter = Inter({
+const inter = Host_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
         className={`${playfairDisplay.variable} ${inter.variable} font-sans`}
       >
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );

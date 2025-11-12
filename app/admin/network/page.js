@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getNetworkStats, saveNetworkStats } from "../../data/mockData";
+import Modal from "../../components/Modal";
 
 export default function ManageNetwork() {
   const [stats, setStats] = useState({
@@ -9,20 +10,53 @@ export default function ManageNetwork() {
     happyCustomers: "",
     serversRunning: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   useEffect(() => {
-    const networkStats = getNetworkStats();
-    setStats(networkStats);
+    const loadNetworkStats = async () => {  
+      try {
+        const networkStats = await getNetworkStats();
+        setStats(networkStats);
+      } catch (error) {
+        console.error("Error loading network stats:", error);
+      }
+    };
+    loadNetworkStats();
   }, []);
 
   const handleChange = (field, value) => {
     setStats({ ...stats, [field]: value });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    saveNetworkStats(stats);
-    alert("Network stats updated successfully!");
+    setLoading(true);
+    try {
+      await saveNetworkStats(stats);
+      setModalConfig({
+        title: "Success",
+        message: "Network stats updated successfully!",
+        type: "success",
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error saving network stats:", error);
+      setModalConfig({
+        title: "Error",
+        message:
+          error.message || "An error occurred while saving. Please try again.",
+        type: "error",
+      });
+      setShowModal(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +71,7 @@ export default function ManageNetwork() {
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-gray-200">
+        <div className="bg-white rounded  p-4  border-2 border-primary">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
@@ -84,18 +118,19 @@ export default function ManageNetwork() {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            disabled={loading}
+            className="px-8 py-3 bg-primary text-white rounded hover:bg-primary/70 transition-all font-semibold  hover: transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            Save Changes
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
 
       {/* Preview */}
-      <div className="mt-10 bg-gray-50 rounded-2xl p-8 md:p-10 border border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Preview</h2>
+      <div className="mt-10  rounded  p-4  border border-primary bg-primary px-8 pb-6">
+        <h2 className="text-2xl font-bold text-secondary pb-2 ">Preview</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          <div className="bg-white rounded-2xl p-10 text-center shadow-lg">
+          <div className="bg-white rounded-2xl p-10 text-center ">
             <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
               Blogs Hosted
             </p>
@@ -103,7 +138,7 @@ export default function ManageNetwork() {
               {stats.blogsHosted}
             </p>
           </div>
-          <div className="bg-white rounded-2xl p-10 text-center shadow-lg">
+          <div className="bg-white rounded-2xl p-10 text-center ">
             <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
               Happy Customers
             </p>
@@ -111,7 +146,7 @@ export default function ManageNetwork() {
               {stats.happyCustomers}
             </p>
           </div>
-          <div className="bg-white rounded-2xl p-10 text-center shadow-lg">
+          <div className="bg-white rounded-2xl p-10 text-center ">
             <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
               Servers Running
             </p>
@@ -121,6 +156,14 @@ export default function ManageNetwork() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        type={modalConfig.type}
+      />
     </div>
   );
 }

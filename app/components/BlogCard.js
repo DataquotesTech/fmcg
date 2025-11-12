@@ -6,9 +6,28 @@ export default function BlogCard({
   trending = false,
 }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 group h-full flex flex-col">
+    <div className="bg-white rounded overflow-hidden transition-all duration-300 border-2 border-primary group h-full flex flex-col relative">
+      {/* Northeast Arrow - Top Right */}
+      <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full ">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="text-gray-400  transition-colors group-hover:text-secondary"
+        >
+          <path
+            d="M5 19L19 5M19 5H13M19 5V11"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
       {image && (
-        <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 overflow-hidden">
+        <div className="relative w-full h-64 sm:h-72 overflow-hidden">
           <div className="absolute inset-0 transform group-hover:scale-110 transition-transform duration-500">
             {image}
           </div>
@@ -25,10 +44,10 @@ export default function BlogCard({
             Trending
           </span>
         )}
-        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-blue-600 transition-colors flex-1">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-tight  transition-colors flex-1">
           {title}
         </h3>
-        <p className="text-gray-600 text-base md:text-lg leading-relaxed line-clamp-3">
+        <p className="text-gray-600 text-xs md:text-lg leading-relaxed line-clamp-3">
           {description}
         </p>
       </div>
