@@ -147,99 +147,103 @@ export default async function BlogDetail({ params }) {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <article className="w-full py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 lg:flex items-center justify-center gap-10 ">
-        <div className="max-w-4xl">
-          {/* Breadcrumb */}
-          <nav className="mb-8 text-sm md:text-base text-gray-600">
-            <Link
-              href="/"
-              className="hover:text-gray-900 transition-colors font-medium"
-            >
-              Home
-            </Link>
-            <span className="mx-2">/</span>
-            <Link
-              href="/#blogs"
-              className="hover:text-gray-900 transition-colors font-medium"
-            >
-              Blogs
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="text-gray-900 font-semibold">{blog.title}</span>
-          </nav>
+      <article className="w-full py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto lg:flex items-start justify-center gap-8 lg:gap-12 xl:gap-16">
+          <div className="max-w-4xl flex-1 w-full">
+            {/* Breadcrumb */}
+            <nav className="mb-8 text-sm md:text-base text-gray-600">
+              <Link
+                href="/"
+                className="hover:text-gray-900 transition-colors font-medium"
+              >
+                Home
+              </Link>
+              <span className="mx-2">/</span>
+              <Link
+                href="/#blogs"
+                className="hover:text-gray-900 transition-colors font-medium"
+              >
+                Blogs
+              </Link>
+              <span className="mx-2">/</span>
+              <span className="text-gray-900 font-semibold">{blog.title}</span>
+            </nav>
 
-          {/* Blog Header */}
-          <div className="mb-10 md:mb-12">
-            <div className="flex flex-wrap gap-3 mb-6">
-              {blog.featured && (
-                <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
-                  Featured
+            {/* Blog Header */}
+            <div className="mb-10 md:mb-12">
+              <div className="flex flex-wrap gap-3 mb-6">
+                {blog.featured && (
+                  <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
+                    Featured
+                  </span>
+                )}
+                {blog.trending && (
+                  <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
+                    Trending
+                  </span>
+                )}
+              </div>
+              <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 md:mb-8 leading-tight">
+                {blog.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-3 md:gap-4 text-sm md:text-base text-gray-600">
+                <span className="font-semibold">By {blog.author}</span>
+                <span className="text-gray-400">•</span>
+                <span>{blog.category}</span>
+                <span className="text-gray-400">•</span>
+                <span>{blog.type}</span>
+                <span className="text-gray-400">•</span>
+                <span>
+                  {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </span>
-              )}
-              {blog.trending && (
-                <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
-                  Trending
-                </span>
-              )}
-            </div>
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 md:mb-8 leading-tight">
-              {blog.title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-3 md:gap-4 text-sm md:text-base text-gray-600">
-              <span className="font-semibold">By {blog.author}</span>
-              <span className="text-gray-400">•</span>
-              <span>{blog.category}</span>
-              <span className="text-gray-400">•</span>
-              <span>{blog.type}</span>
-              <span className="text-gray-400">•</span>
-              <span>
-                {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-          </div>
-
-          {/* Blog Image */}
-          {blog.image && (
-            <div className="mb-10 md:mb-12 rounded-2xl overflow-hidden ">
-              <div className="w-full h-72 md:h-96 lg:h-[500px]">
-                {getImagePlaceholder(blog.image, blog.id)}
               </div>
             </div>
-          )}
 
-          {/* Blog Content */}
-          <BlogContent content={blog.content} />
+            {/* Blog Image */}
+            {blog.image && (
+              <div className="mb-10 md:mb-12 rounded-2xl overflow-hidden ">
+                <div className="w-full h-72 md:h-96 lg:h-[500px]">
+                  {getImagePlaceholder(blog.image, blog.id)}
+                </div>
+              </div>
+            )}
 
-          {/* Back Button */}
-          <div className="mt-12 md:mt-16 pt-8 border-t-2 border-gray-200">
-            <Link
-              href="/#blogs"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold "
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            {/* Blog Content */}
+            <BlogContent content={blog.content} />
+
+            {/* Back Button */}
+            <div className="mt-12 md:mt-16 pt-8 border-t-2 border-gray-200">
+              <Link
+                href="/#blogs"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold "
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              Back to Blogs
-            </Link>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                Back to Blogs
+              </Link>
+            </div>
           </div>
-        </div>
-        <div className="w-full lg:w-1/5 min-h-100 bg-gray-100 rounded p-2 relative">
-          <div className="absolute top-0 right-0 bg-primary  px-2 rounded-tr">
-            <h3 className="text-secondary text-sm font-bold ">Advertisement</h3>
+          <div className="w-full lg:w-1/5 lg:min-w-[280px] min-h-[200px] lg:min-h-[400px] bg-gray-100 rounded p-2 sm:p-4 relative lg:sticky lg:top-24 mt-8 lg:mt-0">
+            <div className="absolute top-0 right-0 bg-primary px-2 sm:px-3 rounded-tr">
+              <h3 className="text-secondary text-xs sm:text-sm font-bold">
+                Advertisement
+              </h3>
+            </div>
           </div>
         </div>
       </article>

@@ -1,9 +1,13 @@
 "use client";
 
+import Image from "next/image";
+
 // Client component for handling image errors
 export default function BlogImage({ src, alt }) {
   return (
     <img
+      width={100}
+      height={100}
       src={src}
       alt={alt}
       className="w-full h-full object-cover"
@@ -27,4 +31,3 @@ export default function BlogImage({ src, alt }) {
     />
   );
 }
-

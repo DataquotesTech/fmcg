@@ -4,18 +4,108 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
-import { useEffect, useState } from "react";
-import Modal from "./Modal";
+import Youtube from "@tiptap/extension-youtube";
+import { useEffect, useState, useId } from "react";
 import ImageUpload from "./ImageUpload";
+
+const DEFAULT_TEXT_COLOR = "#111827";
+const DEFAULT_HIGHLIGHT_COLOR = "#fff9c4";
+
+const sanitizeHexColor = (value, fallback) => {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+
+  const normalized = value.trim();
+
+  if (/^#([0-9a-f]{6})$/i.test(normalized)) {
+    return normalized.toLowerCase();
+  }
+
+  if (/^#([0-9a-f]{3})$/i.test(normalized)) {
+    const expanded = normalized
+      .slice(1)
+      .split("")
+      .map((char) => char + char)
+      .join("");
+    return `#${expanded.toLowerCase()}`;
+  }
+
+  return fallback;
+};
+
+const extractYouTubeId = (url) => {
+  if (!url || typeof url !== "string") {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(url.trim());
+    const hostname = parsedUrl.hostname.replace("www.", "").toLowerCase();
+
+    if (hostname === "youtu.be") {
+      const [videoId] = parsedUrl.pathname.split("/").filter(Boolean);
+      return videoId || null;
+    }
+
+    if (
+      hostname === "youtube.com" ||
+      hostname === "m.youtube.com" ||
+      hostname.endsWith(".youtube.com") ||
+      hostname === "youtube-nocookie.com"
+    ) {
+      if (parsedUrl.pathname === "/watch") {
+        return parsedUrl.searchParams.get("v");
+      }
+
+      if (parsedUrl.pathname.startsWith("/embed/")) {
+        const [, videoId] = parsedUrl.pathname.split("/").filter(Boolean);
+        return videoId || null;
+      }
+
+      if (parsedUrl.pathname.startsWith("/shorts/")) {
+        const [, videoId] = parsedUrl.pathname.split("/").filter(Boolean);
+        return videoId || null;
+      }
+    }
+  } catch (error) {
+    return null;
+  }
+
+  return null;
+};
+
+const getYouTubeEmbedUrl = (url) => {
+  const videoId = extractYouTubeId(url);
+  if (!videoId) {
+    return null;
+  }
+  return `https://www.youtube.com/embed/${videoId}?rel=0`;
+};
+
+const hasProtocol = (url) => /^[a-zA-Z][\w.+-]*:/.test(url);
+
+const normalizeUrl = (url) => {
+  if (!url) {
+    return "";
+  }
+
+  return hasProtocol(url) ? url : `https://${url}`;
+};
 
 // MenuBar component defined outside
 function MenuBar({ editor, onImageClick }) {
   const [showImageModal, setShowImageModal] = useState(false);
   const [imageMode, setImageMode] = useState("upload"); // 'upload' or 'url'
+  const [textColor, setTextColor] = useState(DEFAULT_TEXT_COLOR);
+  const [highlightColor, setHighlightColor] = useState(DEFAULT_HIGHLIGHT_COLOR);
+  const textColorId = useId();
+  const highlightColorId = useId();
 
   if (!editor) {
     return null;
@@ -33,9 +123,100 @@ function MenuBar({ editor, onImageClick }) {
     setShowImageModal(false);
   };
 
+  useEffect(() => {
+    const updateColorState = () => {
+      const currentColor = sanitizeHexColor(
+        editor.getAttributes("textStyle").color,
+        DEFAULT_TEXT_COLOR
+      );
+      setTextColor((prev) => (prev === currentColor ? prev : currentColor));
+
+      const currentHighlight = sanitizeHexColor(
+        editor.getAttributes("highlight").color,
+        DEFAULT_HIGHLIGHT_COLOR
+      );
+      setHighlightColor((prev) =>
+        prev === currentHighlight ? prev : currentHighlight
+      );
+    };
+
+    updateColorState();
+    editor.on("selectionUpdate", updateColorState);
+    editor.on("transaction", updateColorState);
+
+    return () => {
+      editor.off("selectionUpdate", updateColorState);
+      editor.off("transaction", updateColorState);
+    };
+  }, [editor]);
+
+  const handleAddLink = () => {
+    const existingLink = editor.getAttributes("link").href || "";
+    const url = window.prompt("Enter URL:", existingLink);
+
+    if (url === null) {
+      return;
+    }
+
+    const trimmedUrl = url.trim();
+
+    if (trimmedUrl === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    const embedUrl = getYouTubeEmbedUrl(trimmedUrl);
+    if (embedUrl) {
+      editor.chain().focus().setYoutubeVideo({ src: embedUrl }).run();
+      return;
+    }
+
+    const normalizedUrl = normalizeUrl(trimmedUrl);
+    const { empty } = editor.state.selection;
+
+    if (empty) {
+      editor
+        .chain()
+        .focus()
+        .insertContent([
+          {
+            type: "text",
+            text: normalizedUrl,
+            marks: [
+              {
+                type: "link",
+                attrs: {
+                  href: normalizedUrl,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                },
+              },
+            ],
+          },
+          {
+            type: "text",
+            text: " ",
+          },
+        ])
+        .run();
+      return;
+    }
+
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({
+        href: normalizedUrl,
+        target: "_blank",
+        rel: "noopener noreferrer",
+      })
+      .run();
+  };
+
   return (
     <>
-      <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-t-xl border-b-2 border-gray-200 mb-0 overflow-x-auto">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2 p-2 sm:p-3 md:p-4 bg-gray-50 rounded-t-xl border-b-2 border-gray-200 mb-0 overflow-x-auto">
         {/* Headings */}
         <select
           value={
@@ -212,7 +393,8 @@ function MenuBar({ editor, onImageClick }) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`p-2.5 rounded-lg transition-colors ${
+          disabled={!editor.can().chain().focus().toggleBlockquote().run()}
+          className={`p-2.5 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
             editor.isActive("blockquote")
               ? "bg-blue-100 text-blue-700"
               : "hover:bg-gray-200"
@@ -227,12 +409,7 @@ function MenuBar({ editor, onImageClick }) {
         {/* Link */}
         <button
           type="button"
-          onClick={() => {
-            const url = window.prompt("Enter URL:");
-            if (url) {
-              editor.chain().focus().setLink({ href: url }).run();
-            }
-          }}
+          onClick={handleAddLink}
           className={`p-2.5 rounded-lg transition-colors ${
             editor.isActive("link")
               ? "bg-blue-100 text-blue-700"
@@ -256,6 +433,75 @@ function MenuBar({ editor, onImageClick }) {
             <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
           </svg>
         </button>
+
+        <div className="w-px h-8 bg-gray-300"></div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded-lg">
+          <label
+            htmlFor={textColorId}
+            className="text-xs font-semibold text-gray-600"
+          >
+            Text
+          </label>
+          <input
+            id={textColorId}
+            type="color"
+            value={textColor}
+            onChange={(e) => {
+              const value = sanitizeHexColor(e.target.value, DEFAULT_TEXT_COLOR);
+              setTextColor(value);
+              editor.chain().focus().setColor(value).run();
+            }}
+            className="h-9 w-9 cursor-pointer border border-gray-200 rounded"
+            title="Text color"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setTextColor(DEFAULT_TEXT_COLOR);
+              editor.chain().focus().unsetColor().run();
+            }}
+            className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors"
+            title="Reset text color"
+          >
+            Reset
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded-lg">
+          <label
+            htmlFor={highlightColorId}
+            className="text-xs font-semibold text-gray-600"
+          >
+            Highlight
+          </label>
+          <input
+            id={highlightColorId}
+            type="color"
+            value={highlightColor}
+            onChange={(e) => {
+              const value = sanitizeHexColor(
+                e.target.value,
+                DEFAULT_HIGHLIGHT_COLOR
+              );
+              setHighlightColor(value);
+              editor.chain().focus().setHighlight({ color: value }).run();
+            }}
+            className="h-9 w-9 cursor-pointer border border-gray-200 rounded"
+            title="Background color"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
+              editor.chain().focus().unsetHighlight().run();
+            }}
+            className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors"
+            title="Remove highlight"
+          >
+            Clear
+          </button>
+        </div>
 
         <div className="w-px h-8 bg-gray-300"></div>
 
@@ -285,86 +531,106 @@ function MenuBar({ editor, onImageClick }) {
       </div>
 
       {/* Image Upload/URL Modal */}
-      <Modal
-        isOpen={showImageModal}
-        onClose={() => setShowImageModal(false)}
-        title="Add Image"
-        type="info"
-        hideButtons={true}
-      >
-        <div className="space-y-4">
-          <div className="flex gap-2 mb-4">
-            <button
-              type="button"
-              onClick={() => setImageMode("upload")}
-              className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
-                imageMode === "upload"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Upload Image
-            </button>
-            <button
-              type="button"
-              onClick={() => setImageMode("url")}
-              className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${
-                imageMode === "url"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Image URL
-            </button>
-          </div>
-
-          {imageMode === "upload" ? (
-            <ImageUpload
-              onImageUploaded={handleImageUploaded}
-              onCancel={() => setShowImageModal(false)}
-            />
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-3">
-                  Enter Image URL
-                </label>
-                <input
-                  type="url"
-                  id="image-url-input"
-                  placeholder="https://example.com/image.jpg"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const url = e.target.value;
-                      handleImageUrl(url);
-                    }
-                  }}
-                />
-              </div>
-              <div className="flex gap-4 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowImageModal(false)}
-                  className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base "
+      {showImageModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">Add Image</h3>
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const input = document.getElementById("image-url-input");
-                    handleImageUrl(input?.value);
-                  }}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold text-base "
-                >
-                  Add Image
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-          )}
+            <div className="space-y-4">
+              <div className="flex gap-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => setImageMode("upload")}
+                  className={`flex-1 px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all ${
+                    imageMode === "upload"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  Upload Image
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImageMode("url")}
+                  className={`flex-1 px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all ${
+                    imageMode === "url"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  Image URL
+                </button>
+              </div>
+
+              {imageMode === "upload" ? (
+                <ImageUpload
+                  onImageUploaded={handleImageUploaded}
+                  onCancel={() => setShowImageModal(false)}
+                />
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-3">
+                      Enter Image URL
+                    </label>
+                    <input
+                      type="url"
+                      id="image-url-input"
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          const url = e.target.value;
+                          handleImageUrl(url);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowImageModal(false)}
+                      className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl hover:bg-gray-200 transition-all font-semibold text-sm sm:text-base"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById("image-url-input");
+                        handleImageUrl(input?.value);
+                      }}
+                      className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg sm:rounded-xl hover:bg-blue-700 transition-all font-semibold text-sm sm:text-base"
+                    >
+                      Add Image
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </Modal>
+      )}
     </>
   );
 }
@@ -393,7 +659,11 @@ export default function RichTextEditor({
         openOnClick: false,
         HTMLAttributes: {
           class: "text-blue-600 underline",
+          target: "_blank",
+          rel: "noopener noreferrer",
         },
+        autolink: true,
+        linkOnPaste: true,
       }),
       Image.configure({
         inline: true,
@@ -403,6 +673,24 @@ export default function RichTextEditor({
         },
       }),
       Underline,
+      Highlight.configure({
+        multicolor: true,
+        HTMLAttributes: {
+          class: "px-1 rounded",
+        },
+      }),
+      Youtube.configure({
+        inline: false,
+        allowFullscreen: true,
+        modestBranding: true,
+        HTMLAttributes: {
+          class:
+            "tiptap-youtube-player w-full aspect-video my-6 rounded-2xl overflow-hidden",
+          frameborder: "0",
+          allow:
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+        },
+      }),
     ],
     content: value || "",
     onUpdate: ({ editor }) => {
@@ -424,6 +712,27 @@ export default function RichTextEditor({
       editor.commands.setContent(value || "");
     }
   }, [value, editor]);
+
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const handlePaste = ({ event }) => {
+      const text = event.clipboardData?.getData("text/plain");
+      const embedUrl = getYouTubeEmbedUrl(text);
+
+      if (embedUrl) {
+        event.preventDefault();
+        editor.chain().focus().setYoutubeVideo({ src: embedUrl }).run();
+      }
+    };
+
+    editor.on("paste", handlePaste);
+    return () => {
+      editor.off("paste", handlePaste);
+    };
+  }, [editor]);
 
   if (!editor) {
     return (
@@ -519,6 +828,14 @@ export default function RichTextEditor({
           height: auto;
           margin: 1rem 0;
           border-radius: 0.5rem;
+        }
+        .rich-text-editor .ProseMirror iframe {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          border: 0;
+          margin: 1.5rem 0;
+          border-radius: 0.75rem;
+          background-color: #000;
         }
       `}</style>
     </div>

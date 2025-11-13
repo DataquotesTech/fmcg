@@ -8,6 +8,7 @@ import BlogCard from "./components/BlogCard";
 import StatsSection from "./components/StatsSection";
 import AboutSection from "./components/AboutSection";
 import ServicesSection from "./components/ServicesSection";
+import TestimonialsSection from "./components/TestimonialsSection";
 import {
   getBlogsByCategory,
   getFeaturedBlog,
@@ -18,7 +19,7 @@ import Link from "next/link";
 
 export default function Home() {
   const [blogs, setBlogs] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("Promotional Blogs");
+  const [activeCategory, setActiveCategory] = useState("Professional Blogs");
   const [featuredBlog, setFeaturedBlog] = useState(null);
   const [trendingBlog, setTrendingBlog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -270,13 +271,13 @@ export default function Home() {
       <section className="w-full py-18 px-6 sm:px-8 lg:px-10">
         <div className="container mx-auto flex flex-col items-center justify-center">
           <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-5">
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community
             </h1>
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center pt-6">
               <Link
                 href="/register"
-                className="w-full sm:w-auto bg-primary text-secondary px-15 py-4.5 hover:bg-secondary border-2 border-primary transition-all font-semibold text-lg  hover:text-primary"
+                className="w-full sm:w-auto bg-[#10024d]  text-secondary px-15 py-4.5 hover:bg-[#10024d]/80 border-2 border-primary transition-all font-semibold text-lg  "
               >
                 Register
               </Link>
@@ -339,7 +340,7 @@ export default function Home() {
                           Trending
                         </span>
                       </div>
-                      <div className="w-full h-64 md:h-80 lg:h-80">
+                      <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
                         {getImagePlaceholder(
                           trendingBlog.image,
                           trendingBlog.id
@@ -386,7 +387,7 @@ export default function Home() {
                           Featured
                         </span>
                       </div>
-                      <div className="w-full h-64 md:h-80 lg:h-80">
+                      <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
                         {getImagePlaceholder(
                           featuredBlog.image,
                           featuredBlog.id
@@ -407,17 +408,17 @@ export default function Home() {
                 // Only Featured - Full Width
                 <Link
                   href={`/blog/${featuredBlog.id}`}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
                 >
                   {/* Northeast Arrow - Top Right */}
-                  <div className="absolute top-4 right-4 z-20">
+                  <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
                     <svg
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                      className="text-gray-400 group-hover:text-gray-200 transition-colors"
                     >
                       <path
                         d="M5 19L19 5M19 5H13M19 5V11"
@@ -429,11 +430,11 @@ export default function Home() {
                     </svg>
                   </div>
                   {/* Left Side - Text Content */}
-                  <div className="space-y-6 md:space-y-8">
-                    <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
+                  <div className="space-y-6 md:space-y-8 ">
+                    <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
                       Featured
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
+                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight  transition-colors">
                       {featuredBlog.title}
                     </h2>
                     <p className="text-gray-600 text-lg md:text-xl lg:text-2xl leading-relaxed">
@@ -442,7 +443,7 @@ export default function Home() {
                   </div>
 
                   {/* Right Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden ">
+                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-r overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
                     {getImagePlaceholder(featuredBlog.image, featuredBlog.id)}
                   </div>
                 </Link>
@@ -450,17 +451,17 @@ export default function Home() {
                 // Only Trending - Full Width
                 <Link
                   href={`/blog/${trendingBlog.id}`}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
                 >
                   {/* Northeast Arrow - Top Right */}
-                  <div className="absolute top-4 right-4 z-20">
+                  <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
                     <svg
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                      className="text-gray-400 group-hover:text-gray-200 transition-colors"
                     >
                       <path
                         d="M5 19L19 5M19 5H13M19 5V11"
@@ -472,16 +473,16 @@ export default function Home() {
                     </svg>
                   </div>
                   {/* Left Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden ">
+                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-l overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
                     {getImagePlaceholder(trendingBlog.image, trendingBlog.id)}
                   </div>
 
                   {/* Right Side - Text Content */}
                   <div className="space-y-6 md:space-y-8">
-                    <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
+                    <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
                       Trending
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
+                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight  transition-colors">
                       {trendingBlog.title}
                     </h2>
                     <p className="text-gray-600 text-lg md:text-xl lg:text-2xl leading-relaxed">
@@ -614,6 +615,9 @@ export default function Home() {
 
       {/* Services Section */}
       <ServicesSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
       <Footer />
     </div>

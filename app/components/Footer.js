@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Footer() {
@@ -24,26 +26,94 @@ export default function Footer() {
               <ul className="space-y-3">
                 <li>
                   <a
-                    href="#"
-                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
+                    href="#about"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const element = document.getElementById("about");
+                      if (element) {
+                        const headerOffset = 80;
+                        const elementPosition =
+                          element.getBoundingClientRect().top;
+                        const offsetPosition =
+                          elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors cursor-pointer"
                   >
                     About Us
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#"
-                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
+                    href="#blogs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const element = document.getElementById("blogs");
+                      if (element) {
+                        const headerOffset = 80;
+                        const elementPosition =
+                          element.getBoundingClientRect().top;
+                        const offsetPosition =
+                          elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors cursor-pointer"
                   >
-                    Contact
+                    All Posts
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#"
-                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
+                    href="#services"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const element = document.getElementById("services");
+                      if (element) {
+                        const headerOffset = 80;
+                        const elementPosition =
+                          element.getBoundingClientRect().top;
+                        const offsetPosition =
+                          elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors cursor-pointer"
                   >
-                    All Posts
+                    Services
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#network"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const element = document.getElementById("network");
+                      if (element) {
+                        const headerOffset = 80;
+                        const elementPosition =
+                          element.getBoundingClientRect().top;
+                        const offsetPosition =
+                          elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors cursor-pointer"
+                  >
+                    Network
                   </a>
                 </li>
               </ul>
@@ -76,59 +146,59 @@ export default function Footer() {
           {/* Right Column - Follow Us */}
           <div className="flex flex-col justify-between">
             <div>
-            <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-5">
-              Follow Us
-            </h3>
-            <div className="flex space-x-4 md:space-x-5">
-              <a
-                href="#"
-                className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-5">
+                Follow Us
+              </h3>
+              <div className="flex space-x-4 md:space-x-5">
+                <a
+                  href="#"
+                  className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
                 >
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
-                  <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
-                  <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
-                </svg>
-              </a>
-            </div>
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                    <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                  </svg>
+                </a>
+              </div>
             </div>
 
             <div>
-            <Link
+              <Link
                 href="/admin/login"
                 className="w-full font-semibold text-sm underline text-secondary hover:text-primary"
               >

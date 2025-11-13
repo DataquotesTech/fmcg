@@ -1,15 +1,48 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { createBlog, blogTypes, blogCategories } from "../../data/mockData";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  createBlog,
+  blogTypes,
+  blogCategories,
+  getCurrentUserDraft,
+  saveBlogDraft,
+  deleteDraft,
+  getDraftById,
+} from "../../data/mockData";
 import RichTextEditor from "../../components/RichTextEditor";
-import Modal from "../../components/Modal";
+import Toast from "../../components/Toast";
 import { supabase } from "../../../lib/supabase";
 import Image from "next/image";
 
+const computeWordCount = (content) => {
+  const textContent = (content || "").replace(/<[^>]*>/g, " ").trim();
+  return textContent.split(/\s+/).filter((word) => word.length > 0).length;
+};
+
+// Extract first image URL from HTML content
+const extractFirstImageFromContent = (htmlContent) => {
+  if (!htmlContent) return null;
+  
+  // Try to find img tag with src attribute
+  const imgMatch = htmlContent.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
+  if (imgMatch && imgMatch[1]) {
+    return imgMatch[1];
+  }
+  
+  // Try to find YouTube iframe (for video thumbnails)
+  const youtubeMatch = htmlContent.match(/youtube\.com\/embed\/([^"'\s?]+)/i);
+  if (youtubeMatch && youtubeMatch[1]) {
+    return `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`;
+  }
+  
+  return null;
+};
+
 export default function CreateBlog() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Check authentication
   useEffect(() => {
@@ -31,21 +64,189 @@ export default function CreateBlog() {
   const [blogCategory, setBlogCategory] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalConfig, setModalConfig] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [draftId, setDraftId] = useState(null);
+  const [initialDraftChecked, setInitialDraftChecked] = useState(false);
+  const draftIdParam = searchParams.get("draftId");
+  const [toast, setToast] = useState(null);
+
+  const triggerToast = ({ type = "info", title = "", message = "" }) => {
+    setToast({
+      id: Date.now(),
+      type,
+      title,
+      message,
+    });
+  };
 
   const handleContentChange = (content) => {
     setBlogContent(content);
     // Calculate word count from HTML content (strip HTML tags)
-    const textContent = content.replace(/<[^>]*>/g, " ").trim();
-    setWordCount(
-      textContent.split(/\s+/).filter((word) => word.length > 0).length
-    );
+    setWordCount(computeWordCount(content));
+    
+    // If no featured image is set, try to extract first image from content
+    if (!imageUrl && !imageFile) {
+      const contentImage = extractFirstImageFromContent(content);
+      if (contentImage) {
+        setImageUrl(contentImage);
+        // Create a preview if it's a URL
+        if (contentImage.startsWith("http://") || contentImage.startsWith("https://")) {
+          setImagePreview(contentImage);
+        }
+      }
+    }
   };
+
+  const restoreDraft = useCallback((draft) => {
+    if (!draft) {
+      return;
+    }
+
+    setDraftId(draft.id || null);
+    setAuthorName(draft.authorName || draft.author_name || "");
+    setBlogTitle(draft.blogTitle || draft.blog_title || "");
+    setBlogContent(draft.blogContent || draft.blog_content || "");
+    setBlogType(draft.blogType || draft.blog_type || "");
+    setBlogCategory(draft.blogCategory || draft.blog_category || "");
+    setImageUrl(draft.imageUrl || draft.image_url || "");
+    setImagePreview(draft.imagePreview || draft.image_preview || null);
+    setImageFile(null);
+    setWordCount(
+      typeof draft.wordCount === "number"
+        ? draft.wordCount
+        : computeWordCount(draft.blogContent || draft.blog_content || "")
+    );
+  }, []);
+
+  const handleSaveDraft = async () => {
+    if (savingDraft || loading) {
+      return;
+    }
+
+    setSavingDraft(true);
+    try {
+      const savedDraft = await saveBlogDraft({
+        id: draftId,
+        authorName,
+        blogTitle,
+        blogContent,
+        blogType,
+        blogCategory,
+        imageUrl,
+        imagePreview,
+        wordCount,
+      });
+
+      setDraftId(savedDraft?.id || null);
+
+      const updatedAt = savedDraft?.updatedAt
+        ? new Date(savedDraft.updatedAt).toLocaleString()
+        : null;
+
+      triggerToast({
+        type: "success",
+        title: "Draft Saved",
+        message: updatedAt
+          ? `Your draft is safely stored. Last updated on ${updatedAt}.`
+          : "Your draft is safely stored.",
+      });
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      triggerToast({
+        type: "error",
+        title: "Unable to Save Draft",
+        message:
+          error?.message ||
+          "We couldn't save your draft. Please check your connection and try again.",
+      });
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  useEffect(() => {
+    if (initialDraftChecked) {
+      return;
+    }
+
+    const loadDraft = async () => {
+      try {
+        if (draftIdParam) {
+          const draft = await getDraftById(draftIdParam);
+
+          if (draft) {
+            restoreDraft(draft);
+            triggerToast({
+              type: "info",
+              title: "Draft Loaded",
+              message: "You're now editing the selected draft.",
+            });
+          } else {
+            triggerToast({
+              type: "error",
+              title: "Draft Not Found",
+              message:
+                "We couldn't locate that draft. It may have been deleted.",
+            });
+          }
+          router.replace("/admin/create");
+          return;
+        }
+
+        const draft = await getCurrentUserDraft();
+
+        if (draft) {
+          const updatedLabel = draft.updatedAt
+            ? new Date(draft.updatedAt).toLocaleString()
+            : null;
+
+          const shouldLoad = window.confirm(
+            updatedLabel
+              ? `We found a saved draft from ${updatedLabel}. Would you like to continue editing it?`
+              : "We found a saved draft. Would you like to continue editing it?"
+          );
+
+          if (shouldLoad) {
+            restoreDraft(draft);
+            triggerToast({
+              type: "info",
+              title: "Draft Loaded",
+              message: "Your saved draft has been restored.",
+            });
+          } else {
+            try {
+              await deleteDraft(draft.id);
+              setDraftId(null);
+              triggerToast({
+                type: "info",
+                title: "Draft Discarded",
+                message: "The saved draft has been removed.",
+              });
+            } catch (error) {
+              console.error("Error discarding draft:", error);
+              triggerToast({
+                type: "error",
+                title: "Draft Error",
+                message: "We couldn't discard the draft. Please try again.",
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading draft:", error);
+        triggerToast({
+          type: "error",
+          title: "Draft Error",
+          message:
+            "We had trouble loading your drafts. Please refresh and try again.",
+        });
+      } finally {
+        setInitialDraftChecked(true);
+      }
+    };
+
+    loadDraft();
+  }, [draftIdParam, initialDraftChecked, router, restoreDraft]);
 
   const handleImageFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -53,23 +254,21 @@ export default function CreateBlog() {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      setModalConfig({
-        title: "Error",
-        message: "Please select an image file",
+      triggerToast({
         type: "error",
+        title: "Invalid File",
+        message: "Please select an image file.",
       });
-      setShowModal(true);
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setModalConfig({
-        title: "Error",
-        message: "Image size should be less than 5MB",
+      triggerToast({
         type: "error",
+        title: "Image Too Large",
+        message: "Image size should be less than 5MB.",
       });
-      setShowModal(true);
       return;
     }
 
@@ -146,37 +345,51 @@ export default function CreateBlog() {
       !blogType ||
       !blogCategory
     ) {
-      setModalConfig({
+      triggerToast({
+        type: "error",
         title: "Validation Error",
         message: "Please fill in all required fields.",
-        type: "error",
       });
-      setShowModal(true);
       return;
     }
 
     setLoading(true);
     try {
       // Upload image first if a file was selected
-      // If no image provided, randomly select from orange, red, or teal
+      // If no image provided, try to extract from content, otherwise randomly select
       const getRandomImage = () => {
         const options = ["orange", "red", "teal"];
         return options[Math.floor(Math.random() * options.length)];
       };
 
-      let finalImageUrl = imageUrl || getRandomImage();
+      let finalImageUrl = imageUrl;
+      
+      // If no featured image is set, try to extract first image from content
+      if (!finalImageUrl && !imageFile) {
+        const contentImage = extractFirstImageFromContent(blogContent);
+        if (contentImage) {
+          finalImageUrl = contentImage;
+          setImageUrl(contentImage); // Update state for consistency
+        }
+      }
+      
+      // If still no image, use random default
+      if (!finalImageUrl && !imageFile) {
+        finalImageUrl = getRandomImage();
+      }
+      
+      // Upload featured image if a file was selected
       if (imageFile) {
         try {
           finalImageUrl = await uploadImage();
         } catch (uploadError) {
-          setModalConfig({
+          triggerToast({
+            type: "error",
             title: "Upload Error",
             message:
-              uploadError.message ||
+              uploadError?.message ||
               "Failed to upload image. Please try again.",
-            type: "error",
           });
-          setShowModal(true);
           setLoading(false);
           return;
         }
@@ -193,12 +406,20 @@ export default function CreateBlog() {
         trending: false,
       });
 
-      setModalConfig({
+      if (draftId) {
+        try {
+          await deleteDraft(draftId);
+          setDraftId(null);
+        } catch (error) {
+          console.error("Error clearing draft after publish:", error);
+        }
+      }
+
+      triggerToast({
+        type: "success",
         title: "Success",
         message: "Blog created successfully!",
-        type: "success",
       });
-      setShowModal(true);
 
       // Reset form
       setAuthorName("");
@@ -234,31 +455,39 @@ export default function CreateBlog() {
           "Blog ID conflict. Please run the SQL fix: SELECT setval('blogs_id_seq', (SELECT MAX(id) FROM blogs));";
       }
 
-      setModalConfig({
+      triggerToast({
+        type: "error",
         title: "Error",
         message: errorMessage,
-        type: "error",
       });
-      setShowModal(true);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-8 md:mb-10">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
-          Create New Blog Post
-        </h1>
-        <p className="text-gray-600 text-base md:text-lg">
-          Create a new blog post and publish it to your website.
-        </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8 md:mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2 sm:mb-3">
+            Create New Blog Post
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+            Create a new blog post and publish it to your website.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => router.push("/admin/drafts")}
+          className="self-start md:self-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-secondary text-primary rounded cursor-pointer hover:bg-secondary/80 transition-all font-semibold text-sm sm:text-base border-2 border-secondary"
+        >
+          View Drafts
+        </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 md:space-y-8">
         {/* Card 1: Author Name & Blog Post Title */}
-        <div className="bg-white rounded  p-8 md:p-10 border border-gray-200">
+        <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
@@ -290,7 +519,7 @@ export default function CreateBlog() {
         </div>
 
         {/* Card 2: Blog Type & Category */}
-        <div className="bg-white rounded   p-8 md:p-10 border border-gray-200">
+        <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
@@ -332,7 +561,7 @@ export default function CreateBlog() {
         </div>
 
         {/* Card 3: Featured Image */}
-        <div className="bg-white rounded   p-8 md:p-10 border border-gray-200">
+        <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
           <label className="block text-sm font-bold text-gray-700 mb-4">
             Featured Image
           </label>
@@ -351,11 +580,13 @@ export default function CreateBlog() {
                 className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl p-10 md:p-12 text-center hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {imagePreview ? (
-                  <div className="w-full">
+                  <div className="w-full h-full">
                     <Image
                       src={imagePreview}
+                      width={1000}
+                      height={1000}
                       alt="Preview"
-                      className="max-w-full h-auto max-h-64 mx-auto rounded-lg mb-4"
+                      className="max-w-full h-auto max-h-64 mx-auto rounded-lg mb-4 w-full object-cover"
                     />
                     <p className="text-sm text-gray-600 font-medium">
                       Click to change image
@@ -395,7 +626,7 @@ export default function CreateBlog() {
         </div>
 
         {/* Card 4: Blog Content */}
-        <div className="bg-white rounded   p-8 md:p-10 border border-gray-200">
+        <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
           <label className="block text-sm font-bold text-gray-700 mb-5">
             Blog Content
           </label>
@@ -423,6 +654,14 @@ export default function CreateBlog() {
             Cancel
           </button>
           <button
+            type="button"
+            onClick={handleSaveDraft}
+            disabled={loading || savingDraft}
+            className="px-6 py-3 bg-primary/10 text-primary rounded cursor-pointer hover:bg-primary/20 transition-all font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {savingDraft ? "Saving..." : "Save Draft"}
+          </button>
+          <button
             type="submit"
             disabled={loading}
             className="px-8 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold text-base  hover: transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -432,13 +671,15 @@ export default function CreateBlog() {
         </div>
       </form>
 
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={modalConfig.title}
-        message={modalConfig.message}
-        type={modalConfig.type}
-      />
+      {toast ? (
+        <Toast
+          key={toast.id}
+          type={toast.type}
+          title={toast.title}
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      ) : null}
     </div>
   );
 }

@@ -4,10 +4,10 @@
 
 	<feSpecularLighting surfaceScale="15" specularConstant="0.75" specularExponent="20" lighting-color="#7957A8" x="0%" y="0%" width="100%" height="100%" in="turbulence" result="specularLighting">
 
-    		<feDistantLight azimuth="3" elevation="156"></feDistantLight>
+    		<feDistantLight azimuth="3" elevation="100"></feDistantLight>
 
   	</feSpecularLighting>
 
   
 
-</filter></defs><rect width="700" height="700" fill="#f6eee3"></rect><rect width="700" height="700" fill="#7957a8" filter="url(#nnnoise-filter)"></rect></svg>
+</filter></defs><rect width="700" height="700" fill="#fffbf7"></rect><rect width="700" height="700" fill="#7957a8" filter="url(#nnnoise-filter)"></rect></svg>

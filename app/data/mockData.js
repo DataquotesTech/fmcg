@@ -1,10 +1,10 @@
 // Mock data structure for blogs and network stats
 
 export const blogCategories = [
-  "Promotional Blogs",
-  "Distribution Blogs",
+  "Professional Blogs",
   "Wholesaler Blogs",
   "Retailer Blogs",
+  "Distributor Blogs",
   "Aspirant Blogs",
 ];
 
@@ -18,7 +18,7 @@ export const blogTypes = [
 
 // Comprehensive mock blogs with content for each category
 export const initialBlogs = [
-  // Promotional Blogs
+  // Professional Blogs
   {
     id: 1,
     title: "The Ultimate Guide to FMCG Promotional Campaigns in 2024",
@@ -40,7 +40,7 @@ Key performance indicators (KPIs) such as sales lift, customer acquisition cost,
 
 The future of FMCG promotions lies in personalization, sustainability, and authentic brand storytelling. Brands that successfully combine these elements will stand out in an increasingly competitive marketplace.`,
     author: "Sarah Mitchell",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "orange",
     createdAt: "2024-01-15",
@@ -68,7 +68,7 @@ Over-reliance on promotions can train consumers to wait for deals, eroding brand
 
 Best practices include setting clear objectives, monitoring competitor activity, and maintaining consistent brand messaging even during promotional periods.`,
     author: "David Chen",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "red",
     createdAt: "2024-01-20",
@@ -96,7 +96,7 @@ Tracking metrics like engagement rate, reach, click-through rate, and conversion
 
 The key to social media promotional success is consistency, authenticity, and a deep understanding of platform-specific best practices.`,
     author: "Emily Rodriguez",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "teal",
     createdAt: "2024-01-25",
@@ -124,7 +124,7 @@ Effective seasonal promotion planning requires a year-round approach. Analyzing 
 
 Success in seasonal promotions comes from early planning, clear objectives, and seamless execution across all channels.`,
     author: "Michael Thompson",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "orange",
     createdAt: "2024-01-28",
@@ -152,7 +152,7 @@ Key metrics include enrollment rates, active participation, redemption rates, an
 
 Successful loyalty programs balance simplicity with value, making it easy for customers to participate while delivering meaningful rewards that encourage continued engagement.`,
     author: "Jennifer Walsh",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "red",
     createdAt: "2024-02-05",
@@ -180,14 +180,14 @@ Tracking metrics specific to cross-promotional campaigns helps evaluate partners
 
 The most successful cross-promotional partnerships are built on mutual value creation, clear communication, and shared commitment to campaign success.`,
     author: "Robert Kim",
-    category: "Promotional Blogs",
+    category: "Professional Blogs",
     type: "Professional Blog",
     image: "teal",
     createdAt: "2024-02-12",
     featured: false,
     trending: false,
   },
-  // Distribution Blogs
+  // Distributor Blogs
   {
     id: 7,
     title: "Optimizing FMCG Distribution Networks for Efficiency",
@@ -209,7 +209,7 @@ The final leg of distribution, last-mile delivery, often represents the highest 
 
 Continuous optimization through data analysis, technology adoption, and process improvement ensures distribution networks remain competitive and responsive to changing market demands.`,
     author: "James Anderson",
-    category: "Distribution Blogs",
+    category: "Distributor Blogs",
     type: "Distributor Blog",
     image: "orange",
     createdAt: "2024-01-18",
@@ -237,7 +237,7 @@ Effective cold chain management requires careful planning, proper equipment, tra
 
 Investment in cold chain infrastructure and technology pays dividends through reduced waste, improved product quality, and enhanced customer satisfaction.`,
     author: "Patricia Martinez",
-    category: "Distribution Blogs",
+    category: "Distributor Blogs",
     type: "Distributor Blog",
     image: "red",
     createdAt: "2024-01-22",
@@ -265,7 +265,7 @@ While automation requires significant upfront investment, the long-term benefits
 
 The future of FMCG distribution lies in intelligent automation that combines robotics, AI, and data analytics to create highly efficient, responsive supply chains.`,
     author: "Thomas Wilson",
-    category: "Distribution Blogs",
+    category: "Distributor Blogs",
     type: "Distributor Blog",
     image: "teal",
     createdAt: "2024-01-30",
@@ -293,7 +293,7 @@ True omnichannel distribution provides seamless experiences across channels, all
 
 Success in multi-channel distribution requires flexibility, technology investment, and a customer-centric approach that prioritizes convenience and satisfaction across all touchpoints.`,
     author: "Lisa Brown",
-    category: "Distribution Blogs",
+    category: "Distributor Blogs",
     type: "Distributor Blog",
     image: "orange",
     createdAt: "2024-02-08",
@@ -321,7 +321,7 @@ Applying circular economy principles to distribution involves designing systems 
 
 Sustainable distribution practices not only benefit the environment but also often reduce costs, improve brand reputation, and meet evolving regulatory requirements.`,
     author: "Daniel Garcia",
-    category: "Distribution Blogs",
+    category: "Distributor Blogs",
     type: "Distributor Blog",
     image: "red",
     createdAt: "2024-02-15",
@@ -642,9 +642,11 @@ Successful technology integration requires clear strategy, adequate investment, 
 
 // Initial network stats
 export const initialNetworkStats = {
-  blogsHosted: "15,000+",
-  happyCustomers: "25,000+",
-  serversRunning: "1,200+",
+  professional: "0",
+  retailers: "0",
+  wholesalers: "0",
+  distributors: "0",
+  aspirants: "0",
 };
 
 // Supabase helper functions
@@ -1031,11 +1033,11 @@ export const getNetworkStats = async () => {
     }
 
     return {
-      blogsHosted: data.blogs_hosted || initialNetworkStats.blogsHosted,
-      happyCustomers:
-        data.happy_customers || initialNetworkStats.happyCustomers,
-      serversRunning:
-        data.servers_running || initialNetworkStats.serversRunning,
+      professional: data.professional || initialNetworkStats.professional,
+      retailers: data.retailers || initialNetworkStats.retailers,
+      wholesalers: data.wholesalers || initialNetworkStats.wholesalers,
+      distributors: data.distributors || initialNetworkStats.distributors,
+      aspirants: data.aspirants || initialNetworkStats.aspirants,
     };
   } catch (error) {
     console.error("Error fetching network stats:", error);
@@ -1068,9 +1070,11 @@ export const saveNetworkStats = async (stats) => {
       .maybeSingle();
 
     const updateData = {
-      blogs_hosted: stats.blogsHosted,
-      happy_customers: stats.happyCustomers,
-      servers_running: stats.serversRunning,
+      professional: stats.professional,
+      retailers: stats.retailers,
+      wholesalers: stats.wholesalers,
+      distributors: stats.distributors,
+      aspirants: stats.aspirants,
       updated_by: user?.id || null,
     };
 
@@ -1109,6 +1113,229 @@ export const saveNetworkStats = async (stats) => {
   } catch (error) {
     console.error("Error in saveNetworkStats:", error);
     throw error;
+  }
+};
+
+// Draft helpers
+export const getCurrentUserDraft = async () => {
+  try {
+    let user = null;
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (authError) {
+      // User might not be authenticated via Supabase, return null
+      return null;
+    }
+
+    if (!user) {
+      return null;
+    }
+
+    const { data, error } = await supabase
+      .from("blog_drafts")
+      .select(
+        "id, author_name, blog_title, blog_content, blog_type, blog_category, image_url, image_preview, word_count, updated_at"
+      )
+      .eq("created_by", user.id)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error fetching draft:", error);
+      return null;
+    }
+
+    if (!data) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      authorName: data.author_name || "",
+      blogTitle: data.blog_title || "",
+      blogContent: data.blog_content || "",
+      blogType: data.blog_type || "",
+      blogCategory: data.blog_category || "",
+      imageUrl: data.image_url || "",
+      imagePreview: data.image_preview || null,
+      wordCount: data.word_count || 0,
+      updatedAt: data.updated_at || null,
+    };
+  } catch (error) {
+    console.error("Error in getCurrentUserDraft:", error);
+    return null;
+  }
+};
+
+export const saveBlogDraft = async (draftData) => {
+  try {
+    let user = null;
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (authError) {
+      // User might not be authenticated via Supabase, continue without user ID
+      console.log("No authenticated user, saving draft without user ID");
+    }
+
+    const payload = {
+      author_name: draftData.authorName || "",
+      blog_title: draftData.blogTitle || "",
+      blog_content: draftData.blogContent || "",
+      blog_type: draftData.blogType || "",
+      blog_category: draftData.blogCategory || "",
+      image_url: draftData.imageUrl || "",
+      image_preview: draftData.imagePreview || null,
+      word_count: draftData.wordCount || 0,
+      created_by: user?.id || null,
+    };
+
+    let result;
+    if (draftData.id) {
+      let query = supabase
+        .from("blog_drafts")
+        .update({
+          ...payload,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", draftData.id);
+
+      // Only filter by created_by if user exists
+      if (user?.id) {
+        query = query.eq("created_by", user.id);
+      }
+
+      const { data, error } = await query.select().single();
+
+      if (error) {
+        console.error("Error updating draft:", error);
+        throw error;
+      }
+      result = data;
+    } else {
+      const { data, error } = await supabase
+        .from("blog_drafts")
+        .insert([
+          {
+            ...payload,
+            updated_at: new Date().toISOString(),
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating draft:", error);
+        throw error;
+      }
+      result = data;
+    }
+
+    return {
+      id: result.id,
+      authorName: result.author_name || "",
+      blogTitle: result.blog_title || "",
+      blogContent: result.blog_content || "",
+      blogType: result.blog_type || "",
+      blogCategory: result.blog_category || "",
+      imageUrl: result.image_url || "",
+      imagePreview: result.image_preview || null,
+      wordCount: result.word_count || 0,
+      updatedAt: result.updated_at || null,
+    };
+  } catch (error) {
+    console.error("Error in saveBlogDraft:", error);
+    throw error;
+  }
+};
+
+export const deleteDraft = async (id) => {
+  try {
+    const { error } = await supabase.from("blog_drafts").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting draft:", error);
+      throw error;
+    }
+  } catch (error) {
+    console.error("Error in deleteDraft:", error);
+    throw error;
+  }
+};
+
+export const getDrafts = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("blog_drafts")
+      .select(
+        "id, author_name, blog_title, blog_type, blog_category, updated_at, created_at, created_by"
+      )
+      .order("updated_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching drafts:", error);
+      return [];
+    }
+
+    return (data || []).map((draft) => ({
+      id: draft.id,
+      authorName: draft.author_name || "",
+      blogTitle: draft.blog_title || "",
+      blogType: draft.blog_type || "",
+      blogCategory: draft.blog_category || "",
+      updatedAt: draft.updated_at
+        ? new Date(draft.updated_at).toISOString()
+        : null,
+      createdAt: draft.created_at
+        ? new Date(draft.created_at).toISOString()
+        : null,
+      createdBy: draft.created_by || null,
+    }));
+  } catch (error) {
+    console.error("Error in getDrafts:", error);
+    return [];
+  }
+};
+
+export const getDraftById = async (id) => {
+  try {
+    const { data, error } = await supabase
+      .from("blog_drafts")
+      .select(
+        "id, author_name, blog_title, blog_content, blog_type, blog_category, image_url, image_preview, word_count, updated_at, created_by"
+      )
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error || !data) {
+      console.error("Error fetching draft by id:", error);
+      return null;
+    }
+
+    return {
+      id: data.id,
+      authorName: data.author_name || "",
+      blogTitle: data.blog_title || "",
+      blogContent: data.blog_content || "",
+      blogType: data.blog_type || "",
+      blogCategory: data.blog_category || "",
+      imageUrl: data.image_url || "",
+      imagePreview: data.image_preview || null,
+      wordCount: data.word_count || 0,
+      updatedAt: data.updated_at
+        ? new Date(data.updated_at).toISOString()
+        : null,
+      createdBy: data.created_by || null,
+    };
+  } catch (error) {
+    console.error("Error in getDraftById:", error);
+    return null;
   }
 };
 

@@ -10,7 +10,7 @@
 @theme {
   --font-sans: "Inter", sans-serif;
   --font-serif: "Merriweather", serif;
-  --color-primary: #544d45;
+  --color-primary: #10024d;
   --color-secondary: #f6eee3;
 }
 
@@ -142,4 +142,44 @@ nav[class*="sticky"] > div {
     padding-left: 3rem;
     padding-right: 3rem;
   }
+}
+
+/* Scrolling animation for offer text */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Scrolling testimonials animation */
+@keyframes scroll-testimonials {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-scroll-testimonials {
+  animation: scroll-testimonials 40s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.animate-scroll-testimonials:hover {
+  animation-play-state: paused;
 }

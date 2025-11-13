@@ -93,8 +93,8 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center p-4 md:p-6 h-screen">
-      <div className="w-full max-w-2xl  border-2 border-primary p-8 md:p-10 lg:p-12 ">
+    <div className="flex items-center justify-center p-4 sm:p-6 md:p-8 min-h-screen">
+      <div className="w-full max-w-2xl border-2 border-primary p-6 sm:p-8 md:p-10 lg:p-12">
         {/* Icon */}
         <div className="flex justify-center mb-8">
           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center ">
@@ -113,10 +113,10 @@ export default function AdminLogin() {
         </div>
 
         {/* Title */}
-        <h1 className="font-inter text-5xl  font-bold text-gray-900 text-center mb-4">
+        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center mb-3 sm:mb-4">
           Admin Login
         </h1>
-        <p className="text-gray-600 text-center text-sm md:text-sm mb-10">
+        <p className="text-gray-600 text-center text-sm sm:text-base mb-8 sm:mb-10">
           Welcome back, please enter your details.
         </p>
 

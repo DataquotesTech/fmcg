@@ -2,7 +2,7 @@
 
 export default function AboutSection() {
   return (
-    <section className="w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <section id="about" className="w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="container mx-auto max-w-5xl">
         <div className="space-y-16 md:space-y-20">
           {/* Vision */}

@@ -10,9 +10,28 @@ import {
   blogCategories,
 } from "../../data/mockData";
 import RichTextEditor from "../../components/RichTextEditor";
-import Modal from "../../components/Modal";
+import Toast from "../../components/Toast";
 import { supabase } from "../../../lib/supabase";
 import Image from "next/image";
+
+// Extract first image URL from HTML content
+const extractFirstImageFromContent = (htmlContent) => {
+  if (!htmlContent) return null;
+  
+  // Try to find img tag with src attribute
+  const imgMatch = htmlContent.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
+  if (imgMatch && imgMatch[1]) {
+    return imgMatch[1];
+  }
+  
+  // Try to find YouTube iframe (for video thumbnails)
+  const youtubeMatch = htmlContent.match(/youtube\.com\/embed\/([^"'\s?]+)/i);
+  if (youtubeMatch && youtubeMatch[1]) {
+    return `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`;
+  }
+  
+  return null;
+};
 
 export default function EditBlog() {
   const router = useRouter();
@@ -21,13 +40,7 @@ export default function EditBlog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalConfig, setModalConfig] = useState({
-    title: "",
-    message: "",
-    type: "info",
-    onConfirm: null,
-  });
+  const [toast, setToast] = useState(null);
 
   // Check authentication
   useEffect(() => {
@@ -60,23 +73,21 @@ export default function EditBlog() {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      setModalConfig({
+      setToast({
         title: "Error",
         message: "Please select an image file",
         type: "error",
       });
-      setShowModal(true);
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setModalConfig({
+      setToast({
         title: "Error",
         message: "Image size should be less than 5MB",
         type: "error",
       });
-      setShowModal(true);
       return;
     }
 
@@ -117,22 +128,20 @@ export default function EditBlog() {
       } = supabase.storage.from("blog-images").getPublicUrl(filePath);
 
       setEditingBlog({ ...editingBlog, image: publicUrl });
-      setModalConfig({
+      setToast({
         title: "Success",
         message: "Image uploaded successfully!",
         type: "success",
       });
-      setShowModal(true);
     } catch (error) {
       console.error("Error uploading image:", error);
-      setModalConfig({
+      setToast({
         title: "Upload Error",
         message:
           error.message ||
           "Failed to upload image. Please check:\n1. Storage bucket 'blog-images' exists\n2. Storage policies are configured\n3. You are logged in as admin",
         type: "error",
       });
-      setShowModal(true);
     } finally {
       setUploadingImage(false);
     }
@@ -151,17 +160,25 @@ export default function EditBlog() {
       !editingBlog.type ||
       !editingBlog.category
     ) {
-      setModalConfig({
+      setToast({
         title: "Validation Error",
         message: "Please fill in all required fields.",
         type: "error",
       });
-      setShowModal(true);
       return;
     }
 
     setLoading(true);
     try {
+      // If no image is set, try to extract first image from content
+      let finalImage = editingBlog.image;
+      if (!finalImage || finalImage === "orange" || finalImage === "red" || finalImage === "teal") {
+        const contentImage = extractFirstImageFromContent(editingBlog.content);
+        if (contentImage) {
+          finalImage = contentImage;
+        }
+      }
+      
       const result = await updateBlog(editingBlog.id, {
         title: editingBlog.title,
         content: editingBlog.content,
@@ -169,7 +186,7 @@ export default function EditBlog() {
         author: editingBlog.author,
         category: editingBlog.category,
         type: editingBlog.type,
-        image: editingBlog.image,
+        image: finalImage,
         featured: editingBlog.featured,
         trending: editingBlog.trending,
       });
@@ -178,12 +195,11 @@ export default function EditBlog() {
 
       await loadBlogs();
       setEditingBlog(null);
-      setModalConfig({
+      setToast({
         title: "Success",
         message: "Blog updated successfully!",
         type: "success",
       });
-      setShowModal(true);
     } catch (error) {
       console.error("Error updating blog:", error);
       let errorMessage = "An error occurred while updating the blog. ";
@@ -195,50 +211,42 @@ export default function EditBlog() {
         errorMessage +=
           "Please check your Supabase configuration and try again.";
       }
-      setModalConfig({
+      setToast({
         title: "Error",
         message: errorMessage,
         type: "error",
       });
-      setShowModal(true);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    setModalConfig({
-      title: "Confirm Delete",
-      message:
-        "Are you sure you want to delete this blog? This action cannot be undone.",
-      type: "confirm",
-      showCancel: true,
-      onConfirm: async () => {
-        try {
-          await deleteBlog(id);
-          await loadBlogs();
-          if (editingBlog && editingBlog.id === id) {
-            setEditingBlog(null);
-          }
-          setModalConfig({
-            title: "Success",
-            message: "Blog deleted successfully!",
-            type: "success",
-          });
-          setShowModal(true);
-        } catch (error) {
-          console.error("Error deleting blog:", error);
-          setModalConfig({
-            title: "Error",
-            message:
-              "An error occurred while deleting the blog. Please try again.",
-            type: "error",
-          });
-          setShowModal(true);
-        }
-      },
-    });
-    setShowModal(true);
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this blog? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteBlog(id);
+      await loadBlogs();
+      if (editingBlog && editingBlog.id === id) {
+        setEditingBlog(null);
+      }
+      setToast({
+        title: "Success",
+        message: "Blog deleted successfully!",
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      setToast({
+        title: "Error",
+        message:
+          "An error occurred while deleting the blog. Please try again.",
+        type: "error",
+      });
+    }
   };
 
   const filteredBlogs = blogs.filter(
@@ -250,26 +258,26 @@ export default function EditBlog() {
 
   if (editingBlog) {
     return (
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-8 md:mb-10 flex items-center justify-between flex-wrap gap-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6 sm:mb-8 md:mb-10 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
               Edit Blog Post
             </h1>
-            <p className="text-gray-600 text-base md:text-lg">
+            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
               Edit the blog post details.
             </p>
           </div>
           <button
             onClick={() => setEditingBlog(null)}
-            className="px-6 py-3 bg-primary text-secondary rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold border-2 border-primary "
+            className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-primary text-secondary rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold text-sm sm:text-base border-2 border-primary"
           >
             Back to List
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6 md:space-y-8">
-          <div className="bg-white rounded  p-8 md:p-10 border border-gray-200">
+        <form onSubmit={handleSave} className="space-y-4 sm:space-y-6 md:space-y-8">
+          <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-4">
@@ -302,8 +310,8 @@ export default function EditBlog() {
             </div>
           </div>
 
-          <div className="bg-white rounded  p-8 md:p-10 border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-4">
                   Blog Type
@@ -402,8 +410,8 @@ export default function EditBlog() {
             </div>
           </div>
 
-          <div className="bg-white rounded  p-8 md:p-10 border border-gray-200">
-            <label className="block text-sm font-bold text-gray-700 mb-5">
+          <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
+            <label className="block text-sm font-bold text-gray-700 mb-4 sm:mb-5">
               Blog Content
             </label>
             <RichTextEditor
@@ -414,28 +422,39 @@ export default function EditBlog() {
                 const description =
                   textContent.substring(0, 150) +
                   (textContent.length > 150 ? "..." : "");
+
+                // If no image is set (or using default), try to extract first image from content
+                let updatedImage = editingBlog.image;
+                if (!updatedImage || updatedImage === "orange" || updatedImage === "red" || updatedImage === "teal") {
+                  const contentImage = extractFirstImageFromContent(content);
+                  if (contentImage) {
+                    updatedImage = contentImage;
+                  }
+                }
+
                 setEditingBlog({
                   ...editingBlog,
                   content: content,
                   description: description,
+                  image: updatedImage,
                 });
               }}
               placeholder="Start writing your amazing story..."
             />
           </div>
 
-          <div className="flex justify-end gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
             <button
               type="button"
               onClick={() => setEditingBlog(null)}
-              className="px-6 py-3 bg-gray-100 cursor-pointer text-gray-700 rounded hover:bg-gray-200 transition-all font-semibold "
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-gray-100 cursor-pointer text-gray-700 rounded hover:bg-gray-200 transition-all font-semibold text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold  hover: disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
@@ -446,8 +465,8 @@ export default function EditBlog() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8 md:mb-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8 md:mb-10">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
           Edit Blogs
         </h1>
@@ -456,18 +475,18 @@ export default function EditBlog() {
         </p>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <input
           type="text"
           placeholder="Search blogs by title, author, or category..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-6 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base "
+          className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
         />
       </div>
 
       {filteredBlogs.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {filteredBlogs.map((blog) => (
             <div
               key={blog.id}
@@ -488,16 +507,16 @@ export default function EditBlog() {
                   <span className="font-semibold">Type:</span> {blog.type}
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
                   onClick={() => handleEdit(blog)}
-                  className="flex-1 px-4 py-3 bg-secondary text-primary rounded cursor-pointer hover:bg-secondary/70 text-sm font-semibold  hover: transition-all"
+                  className="flex-1 px-4 py-2.5 sm:py-3 bg-secondary text-primary rounded cursor-pointer hover:bg-secondary/70 text-xs sm:text-sm font-semibold transition-all"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(blog.id)}
-                  className="px-6 py-3 bg-red-600/30 text-white rounded cursor-pointer hover:bg-red-700 text-sm font-semibold  hover: transition-all"
+                  className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-red-600/30 text-white rounded cursor-pointer hover:bg-red-700 text-xs sm:text-sm font-semibold transition-all"
                 >
                   Delete
                 </button>
@@ -526,16 +545,14 @@ export default function EditBlog() {
         </div>
       )}
 
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={modalConfig.title}
-        message={modalConfig.message}
-        type={modalConfig.type}
-        showCancel={modalConfig.showCancel || false}
-        onConfirm={modalConfig.onConfirm}
-        confirmText={modalConfig.type === "confirm" ? "Delete" : "OK"}
-      />
+      {toast && (
+        <Toast
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

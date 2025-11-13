@@ -5,9 +5,11 @@ import { getNetworkStats } from "../data/mockData";
 
 export default function StatsSection() {
   const [stats, setStats] = useState({
-    blogsHosted: "15,000+",
-    happyCustomers: "25,000+",
-    serversRunning: "1,200+",
+    professional: "0",
+    retailers: "0",
+    wholesalers: "0",
+    distributors: "0",
+    aspirants: "0",
   });
 
   useEffect(() => {
@@ -27,33 +29,46 @@ export default function StatsSection() {
 
   const statsArray = [
     {
-      label: "Blogs Hosted",
-      value: stats.blogsHosted,
+      label: "Professional",
+      value: stats.professional,
     },
     {
-      label: "Happy Customers",
-      value: stats.happyCustomers,
+      label: "Retailers",
+      value: stats.retailers,
     },
     {
-      label: "Servers Running",
-      value: stats.serversRunning,
+      label: "Wholesalers",
+      value: stats.wholesalers,
+    },
+    {
+      label: "Distributors",
+      value: stats.distributors,
+    },
+    {
+      label: "Aspirants",
+      value: stats.aspirants,
     },
   ];
 
   return (
-    <section className="w-full py-20 md:py-24 lg:py-28 bg-neutral-800  px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto max-w-6xl flex items-center justify-self-center flex-col gap-5">
-        <h2 className="text-5xl font-semibold text-secondary pb-6">Our Network</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+    <section
+      id="network"
+      className="w-full py-20 md:py-24 lg:py-28 bg-neutral-800  px-4 sm:px-6 lg:px-8"
+    >
+      <div className="container mx-auto max-w-7xl flex items-center justify-self-center flex-col gap-4 sm:gap-5">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-secondary pb-4 sm:pb-6 text-center">
+          Our Network
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 w-full">
           {statsArray.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg p-12 md:p-14 lg:p-16 transition-all duration-300 border border-gray-100 text-center"
+              className="bg-white rounded p-6 sm:p-8 md:p-10 lg:p-12 transition-all duration-300 border border-gray-100 text-center"
             >
-              <p className="text-base md:text-lg font-semibold text-gray-600 mb-8 md:mb-10 uppercase tracking-wide">
+              <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-600 pb-6 sm:pb-8 md:pb-10 uppercase tracking-wide">
                 {stat.label}
               </p>
-              <p className="text-5xl md:text-6xl  font-bold text-gray-900">
+              <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center">
                 {stat.value}
               </p>
             </div>

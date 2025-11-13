@@ -2,24 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { getNetworkStats, saveNetworkStats } from "../../data/mockData";
-import Modal from "../../components/Modal";
+import Toast from "../../components/Toast";
 
 export default function ManageNetwork() {
   const [stats, setStats] = useState({
-    blogsHosted: "",
-    happyCustomers: "",
-    serversRunning: "",
+    professional: "",
+    retailers: "",
+    wholesalers: "",
+    distributors: "",
+    aspirants: "",
   });
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalConfig, setModalConfig] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    const loadNetworkStats = async () => {  
+    const loadNetworkStats = async () => {
       try {
         const networkStats = await getNetworkStats();
         setStats(networkStats);
@@ -39,75 +36,99 @@ export default function ManageNetwork() {
     setLoading(true);
     try {
       await saveNetworkStats(stats);
-      setModalConfig({
+      setToast({
         title: "Success",
         message: "Network stats updated successfully!",
         type: "success",
       });
-      setShowModal(true);
     } catch (error) {
       console.error("Error saving network stats:", error);
-      setModalConfig({
+      setToast({
         title: "Error",
         message:
           error.message || "An error occurred while saving. Please try again.",
         type: "error",
       });
-      setShowModal(true);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-8 md:mb-10">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8 md:mb-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2 sm:mb-3">
           Manage Network
         </h1>
-        <p className="text-gray-600 text-base md:text-lg">
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg">
           Update network statistics that appear on the landing page.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-8">
-        <div className="bg-white rounded  p-4  border-2 border-primary">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <form onSubmit={handleSave} className="space-y-6 sm:space-y-8">
+        <div className="bg-white rounded p-4 sm:p-6 border-2 border-primary">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Blogs Hosted
+                Professional
               </label>
               <input
                 type="text"
-                value={stats.blogsHosted}
-                onChange={(e) => handleChange("blogsHosted", e.target.value)}
-                placeholder="e.g., 15,000+"
+                value={stats.professional}
+                onChange={(e) => handleChange("professional", e.target.value)}
+                placeholder="e.g., 1,500"
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Happy Customers
+                Retailers
               </label>
               <input
                 type="text"
-                value={stats.happyCustomers}
-                onChange={(e) => handleChange("happyCustomers", e.target.value)}
-                placeholder="e.g., 25,000+"
+                value={stats.retailers}
+                onChange={(e) => handleChange("retailers", e.target.value)}
+                placeholder="e.g., 2,000"
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Servers Running
+                Wholesalers
               </label>
               <input
                 type="text"
-                value={stats.serversRunning}
-                onChange={(e) => handleChange("serversRunning", e.target.value)}
-                placeholder="e.g., 1,200+"
+                value={stats.wholesalers}
+                onChange={(e) => handleChange("wholesalers", e.target.value)}
+                placeholder="e.g., 1,200"
+                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4">
+                Distributors
+              </label>
+              <input
+                type="text"
+                value={stats.distributors}
+                onChange={(e) => handleChange("distributors", e.target.value)}
+                placeholder="e.g., 800"
+                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4">
+                Aspirants
+              </label>
+              <input
+                type="text"
+                value={stats.aspirants}
+                onChange={(e) => handleChange("aspirants", e.target.value)}
+                placeholder="e.g., 3,500"
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 required
               />
@@ -119,7 +140,7 @@ export default function ManageNetwork() {
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 bg-primary text-white rounded hover:bg-primary/70 transition-all font-semibold  hover: transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-primary text-white rounded hover:bg-primary/70 transition-all font-semibold text-sm sm:text-base transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
@@ -127,43 +148,60 @@ export default function ManageNetwork() {
       </form>
 
       {/* Preview */}
-      <div className="mt-10  rounded  p-4  border border-primary bg-primary px-8 pb-6">
-        <h2 className="text-2xl font-bold text-secondary pb-2 ">Preview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          <div className="bg-white rounded-2xl p-10 text-center ">
-            <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
-              Blogs Hosted
+      <div className="mt-8 sm:mt-10 rounded p-4 sm:p-6 border border-primary bg-primary px-4 sm:px-6 md:px-8 pb-4 sm:pb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-secondary pb-2 sm:pb-3">Preview</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Professional
             </p>
-            <p className="text-5xl md:text-6xl font-bold text-gray-900">
-              {stats.blogsHosted}
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl p-10 text-center ">
-            <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
-              Happy Customers
-            </p>
-            <p className="text-5xl md:text-6xl font-bold text-gray-900">
-              {stats.happyCustomers}
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.professional}
             </p>
           </div>
-          <div className="bg-white rounded-2xl p-10 text-center ">
-            <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wide">
-              Servers Running
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Retailers
             </p>
-            <p className="text-5xl md:text-6xl font-bold text-gray-900">
-              {stats.serversRunning}
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.retailers}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Wholesalers
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.wholesalers}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Distributors
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.distributors}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Aspirants
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.aspirants}
             </p>
           </div>
         </div>
       </div>
 
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={modalConfig.title}
-        message={modalConfig.message}
-        type={modalConfig.type}
-      />
+      {toast && (
+        <Toast
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

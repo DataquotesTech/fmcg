@@ -59,19 +59,19 @@ export default function RegisterPage() {
           </div>
 
           {/* Registration Buttons Grid */}
-          <div className="grid grid-cols-1  gap-6 md:gap-8">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
             {registrationTypes.map((type, index) => (
               <a
                 key={index}
                 href={type.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-white rounded-2xl border-2 border-primary p-8 md:p-10  transition-all duration-300 flex flex-col items-center text-center"
+                className="group bg-white rounded-xl sm:rounded-2xl border-2 border-primary p-6 sm:p-8 md:p-10 transition-all duration-300 flex flex-col items-center text-center"
               >
-                <div className="flex items-center justify-center gap-6 ">
-                  <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 group-hover:bg-secondary transition-colors duration-300">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary rounded-full flex items-center justify-center group-hover:bg-secondary transition-colors duration-300 shrink-0">
                     <svg
-                      className="w-6 h-6 text-secondary group-hover:text-primary transition-colors duration-300"
+                      className="w-5 h-5 sm:w-6 sm:h-6 text-secondary group-hover:text-primary transition-colors duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -83,18 +83,17 @@ export default function RegisterPage() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    
                   </div>
-                  <h3 className="text-xl md:text-4xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
-                  {type.label}
-                </h3>
+                  <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 group-hover:text-primary transition-colors text-center">
+                    {type.label}
+                  </h3>
                 </div>
                 
-                <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6 mt-4">
                   {type.description}
                 </p>
                 <div className="mt-auto w-full">
-                  <div className="bg-primary text-secondary px-8 py-4 rounded-lg font-semibold text-lg group-hover:bg-secondary group-hover:text-primary group-hover:border-2 group-hover:border-primary transition-all duration-300">
+                  <div className="bg-primary text-secondary px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg group-hover:bg-secondary group-hover:text-primary group-hover:border-2 group-hover:border-primary transition-all duration-300">
                     Register Now
                   </div>
                 </div>

@@ -2,18 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { getBlogs, updateBlog, blogCategories } from "../../data/mockData";
-import Modal from "../../components/Modal";
+import Toast from "../../components/Toast";
 
 export default function ManageTrending() {
   const [blogs, setBlogs] = useState([]);
   const [selectedTrending, setSelectedTrending] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalConfig, setModalConfig] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     loadBlogs();
@@ -78,20 +73,18 @@ export default function ManageTrending() {
       // The updates are already done in handleCategoryChange
       // Just reload to ensure consistency
       await loadBlogs();
-      setModalConfig({
+      setToast({
         title: "Success",
         message: "Trending blogs updated successfully!",
         type: "success",
       });
-      setShowModal(true);
     } catch (error) {
       console.error("Error saving trending blogs:", error);
-      setModalConfig({
+      setToast({
         title: "Error",
         message: "An error occurred while saving. Please try again.",
         type: "error",
       });
-      setShowModal(true);
     } finally {
       setLoading(false);
     }
@@ -102,26 +95,26 @@ export default function ManageTrending() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-8 md:mb-10">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8 md:mb-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2 sm:mb-3">
           Manage Trending
         </h1>
-        <p className="text-gray-600 text-base md:text-lg">
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg">
           Select one trending blog for each category. Only one blog can be
           trending per category.
         </p>
       </div>
 
-      <div className="space-y-6 md:space-y-8">
+      <div className="space-y-4 sm:space-y-6 md:space-y-8">
         {blogCategories.map((category) => {
           const categoryBlogs = getCategoryBlogs(category);
           return (
             <div
               key={category}
-              className="bg-white rounded  p-4  border-2 border-primary"
+              className="bg-white rounded p-4 sm:p-6 border-2 border-primary"
             >
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
                 {category}
               </h2>
               <div className="mb-4">
@@ -153,23 +146,24 @@ export default function ManageTrending() {
         })}
       </div>
 
-      <div className="mt-8 flex justify-end">
+      <div className="mt-6 sm:mt-8 flex justify-end">
         <button
           onClick={handleSave}
           disabled={loading}
-          className="px-8 py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold  hover: transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-primary text-white rounded cursor-pointer hover:bg-primary/70 transition-all font-semibold text-sm sm:text-base transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </div>
 
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={modalConfig.title}
-        message={modalConfig.message}
-        type={modalConfig.type}
-      />
+      {toast && (
+        <Toast
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

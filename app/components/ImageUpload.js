@@ -2,13 +2,13 @@
 
 import { useState, useRef } from "react";
 import { supabase } from "../../lib/supabase";
-import Modal from "./Modal";
+import Toast from "./Toast";
 
 export default function ImageUpload({ onImageUploaded, onCancel }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [toast, setToast] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (e) => {
@@ -18,14 +18,22 @@ export default function ImageUpload({ onImageUploaded, onCancel }) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
         setError("Please select an image file");
-        setShowErrorModal(true);
+        setToast({
+          title: "Error",
+          message: "Please select an image file",
+          type: "error",
+        });
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("Image size should be less than 5MB");
-        setShowErrorModal(true);
+        setToast({
+          title: "Error",
+          message: "Image size should be less than 5MB",
+          type: "error",
+        });
         return;
       }
 
@@ -42,7 +50,11 @@ export default function ImageUpload({ onImageUploaded, onCancel }) {
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
       setError("Please select an image file");
-      setShowErrorModal(true);
+      setToast({
+        title: "Error",
+        message: "Please select an image file",
+        type: "error",
+      });
       return;
     }
 
@@ -77,7 +89,11 @@ export default function ImageUpload({ onImageUploaded, onCancel }) {
     } catch (error) {
       console.error("Error uploading image:", error);
       setError("Failed to upload image. Please try again.");
-      setShowErrorModal(true);
+      setToast({
+        title: "Error",
+        message: "Failed to upload image. Please try again.",
+        type: "error",
+      });
     } finally {
       setUploading(false);
     }
@@ -85,13 +101,14 @@ export default function ImageUpload({ onImageUploaded, onCancel }) {
 
   return (
     <>
-      <Modal
-        isOpen={showErrorModal}
-        onClose={() => setShowErrorModal(false)}
-        title="Error"
-        message={error}
-        type="error"
-      />
+      {toast && (
+        <Toast
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="space-y-4">
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-3">
