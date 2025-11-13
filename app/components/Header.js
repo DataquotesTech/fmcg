@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -14,7 +15,8 @@ export default function Header() {
           <div className="flex border-r-2 h-full items-center justify-center px-6 hover:bg-primary hover:text-secondary transition-all duration-300">
             <div className="shrink-0  px-2 py-2 rounded-2xl">
               <Link href="/" className="text-xl sm:text-3xl font-bold py-10">
-                FMCG Influencer.com
+               <Image width={300}                 // required
+        height={200}                 src="/fmcg-removebg-preview.png" alt="" className="w-23 pt-2"/>
               </Link>
             </div>
           </div>

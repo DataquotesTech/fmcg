@@ -43,7 +43,7 @@ export default function EditBlog() {
 
   const loadBlogs = async () => {
     try {
-      const allBlogs = await getBlogs();
+      const allBlogs = await getBlogs({ includeContent: true });
       setBlogs(allBlogs);
     } catch (error) {
       console.error("Error loading blogs:", error);
@@ -385,7 +385,7 @@ export default function EditBlog() {
                 !editingBlog.image.match(/^(orange|red|teal)$/i) && (
                   <div className="mt-4">
                     <p className="text-xs text-gray-600 mb-2">Current Image:</p>
-                    <Image
+                    <img
                       src={editingBlog.image}
                       alt="Current"
                       className="max-w-full h-auto max-h-48 rounded-lg border-2 border-gray-200"

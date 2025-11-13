@@ -270,7 +270,7 @@ export default function Home() {
       <section className="w-full py-18 px-6 sm:px-8 lg:px-10">
         <div className="container mx-auto flex flex-col items-center justify-center">
           <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-5">
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[1.05] tracking-tight">
+            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community
             </h1>
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center pt-6">

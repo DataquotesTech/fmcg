@@ -651,12 +651,30 @@ export const initialNetworkStats = {
 import { supabase } from "../../lib/supabase";
 import { cache } from "react";
 
-// Get all blogs from Supabase (optimized - excludes content for list views)
-export const getBlogs = async () => {
+// Get all blogs from Supabase
+// Pass { includeContent: true } when you need the full HTML content (e.g., admin edit form)
+export const getBlogs = async ({ includeContent = false } = {}) => {
   try {
+    const columns = [
+      "id",
+      "title",
+      "description",
+      "author",
+      "category",
+      "type",
+      "image",
+      "created_at",
+      "featured",
+      "trending",
+    ];
+
+    if (includeContent) {
+      columns.push("content");
+    }
+
     const { data, error } = await supabase
       .from("blogs")
-      .select("id, title, description, author, category, type, image, created_at, featured, trending")
+      .select(columns.join(", "))
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -669,6 +687,7 @@ export const getBlogs = async () => {
       id: blog.id,
       title: blog.title,
       description: blog.description,
+      ...(includeContent && { content: blog.content }),
       author: blog.author,
       category: blog.category,
       type: blog.type,
@@ -695,7 +714,9 @@ export const getBlogById = cache(async (id) => {
 
     const { data, error } = await supabase
       .from("blogs")
-      .select("id, title, description, content, author, category, type, image, created_at, featured, trending")
+      .select(
+        "id, title, description, content, author, category, type, image, created_at, featured, trending"
+      )
       .eq("id", id)
       .single();
 
@@ -742,7 +763,9 @@ export const getBlogsByCategory = cache(async (category) => {
   try {
     const { data, error } = await supabase
       .from("blogs")
-      .select("id, title, description, author, category, type, image, created_at, featured, trending")
+      .select(
+        "id, title, description, author, category, type, image, created_at, featured, trending"
+      )
       .eq("category", category)
       .eq("featured", false)
       .eq("trending", false)
@@ -778,7 +801,9 @@ export const getFeaturedBlog = cache(async (category) => {
   try {
     const { data, error } = await supabase
       .from("blogs")
-      .select("id, title, description, author, category, type, image, created_at, featured, trending")
+      .select(
+        "id, title, description, author, category, type, image, created_at, featured, trending"
+      )
       .eq("category", category)
       .eq("featured", true)
       .single();
@@ -811,7 +836,9 @@ export const getTrendingBlog = cache(async (category) => {
   try {
     const { data, error } = await supabase
       .from("blogs")
-      .select("id, title, description, author, category, type, image, created_at, featured, trending")
+      .select(
+        "id, title, description, author, category, type, image, created_at, featured, trending"
+      )
       .eq("category", category)
       .eq("trending", true)
       .single();
