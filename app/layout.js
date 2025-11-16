@@ -14,10 +14,79 @@ const inter = Host_Grotesk({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://fmcginfluencer.com";
+const siteName = "FMCG Influencer";
+
 export const metadata = {
-  title: "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+  title: {
+    default:
+      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+    template: "%s | FMCG Influencer",
+  },
   description:
-    "Inspiration and insights for creators, thinkers, and innovators.",
+    "Expert insights, strategies, and daily updates for FMCG professionals, wholesalers, retailers, distributors, and aspirants. Build your brand and grow your community.",
+  keywords: [
+    "FMCG",
+    "Fast Moving Consumer Goods",
+    "FMCG blogs",
+    "Professional Blogs",
+    "Wholesaler Blogs",
+    "Retailer Blogs",
+    "Distributor Blogs",
+    "Daily Updates",
+    "FMCG industry insights",
+    "Consumer goods",
+  ],
+  authors: [{ name: "FMCG Influencer" }],
+  creator: "FMCG Influencer",
+  publisher: "FMCG Influencer",
+  metadataBase: new URL(siteUrl),
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: siteName,
+    title:
+      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+    description:
+      "Expert insights, strategies, and daily updates for FMCG professionals, wholesalers, retailers, distributors, and aspirants.",
+    images: [
+      {
+        url: `${siteUrl}/fmcg-removebg-preview.png`,
+        width: 1200,
+        height: 630,
+        alt: "FMCG Influencer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+    description:
+      "Expert insights, strategies, and daily updates for FMCG professionals, wholesalers, retailers, distributors, and aspirants.",
+    images: [`${siteUrl}/fmcg-removebg-preview.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }) {

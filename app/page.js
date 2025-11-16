@@ -9,6 +9,11 @@ import StatsSection from "./components/StatsSection";
 import AboutSection from "./components/AboutSection";
 import ServicesSection from "./components/ServicesSection";
 import TestimonialsSection from "./components/TestimonialsSection";
+import SEOHead from "./components/SEOHead";
+import StructuredData, {
+  generateWebsiteStructuredData,
+  generateCategoryStructuredData,
+} from "./components/StructuredData";
 import {
   getBlogsByCategory,
   getFeaturedBlog,
@@ -263,8 +268,22 @@ export default function Home() {
     }
   };
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://fmcg-influencer.com";
+  const websiteStructuredData = generateWebsiteStructuredData(siteUrl);
+  const categoryStructuredData = generateCategoryStructuredData(
+    activeCategory,
+    siteUrl
+  );
+
   return (
     <div className="min-h-screen ">
+      <StructuredData data={websiteStructuredData} />
+      <StructuredData data={categoryStructuredData} />
+      <SEOHead
+        category={activeCategory}
+        description={`Browse ${activeCategory} articles and insights for FMCG professionals. Expert strategies and daily updates.`}
+      />
       <Header />
 
       {/* Hero Section */}
@@ -293,16 +312,16 @@ export default function Home() {
       </section>
 
       {/* Category Navigation */}
-      <CategoryNav
-        activeCategory={activeCategory}
-        onCategoryChange={handleCategoryChange}
-      />
 
       {/* Main Content Area */}
       <section
         id="blogs"
-        className="w-full py-16 md:py-20 lg:py-24 px-6 sm:px-8 lg:px-10"
+        className="w-full pb-16 md:pb-20 lg:pb-24 px-6 sm:px-8 lg:px-10"
       >
+        <CategoryNav
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+        />
         <div className="container mx-auto max-w-7xl">
           {/* Featured & Trending Section - Side by Side if both exist */}
           {(featuredBlog || trendingBlog) && (
@@ -434,10 +453,10 @@ export default function Home() {
                     <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
                       Featured
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight  transition-colors">
+                    <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
                       {featuredBlog.title}
                     </h2>
-                    <p className="text-gray-600 text-lg md:text-xl lg:text-2xl leading-relaxed">
+                    <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
                       {featuredBlog.description}
                     </p>
                   </div>
@@ -482,10 +501,10 @@ export default function Home() {
                     <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
                       Trending
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight  transition-colors">
+                    <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
                       {trendingBlog.title}
                     </h2>
-                    <p className="text-gray-600 text-lg md:text-xl lg:text-2xl leading-relaxed">
+                    <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
                       {trendingBlog.description}
                     </p>
                   </div>

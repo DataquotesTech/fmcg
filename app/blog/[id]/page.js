@@ -5,9 +5,83 @@ import Footer from "../../components/Footer";
 import { getBlogById } from "../../data/mockData";
 import BlogImage from "./BlogImage";
 import BlogContent from "./BlogContent";
+import StructuredData, {
+  generateBlogStructuredData,
+  generateBreadcrumbStructuredData,
+} from "../../components/StructuredData";
 
 // Enable ISR (Incremental Static Regeneration) - revalidate every 60 seconds
 export const revalidate = 60;
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://fmcginfluencer.com";
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }) {
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const id = resolvedParams.id;
+  const blogId = !isNaN(id) && !isNaN(parseInt(id)) ? parseInt(id) : id;
+  const blog = await getBlogById(blogId);
+
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog post could not be found.",
+    };
+  }
+
+  // Strip HTML tags from description for meta description
+  const plainDescription = blog.description
+    ? blog.description.replace(/<[^>]*>/g, "").substring(0, 160)
+    : `Read ${blog.title} by ${blog.author} in the ${blog.category} category.`;
+
+  const blogUrl = `${siteUrl}/blog/${id}`;
+  const imageUrl =
+    blog.image &&
+    (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
+      ? blog.image
+      : `${siteUrl}/fmcg-removebg-preview.png`;
+
+  return {
+    title: blog.title,
+    description: plainDescription,
+    keywords: [
+      blog.category,
+      blog.type,
+      "FMCG",
+      "Fast Moving Consumer Goods",
+      blog.title,
+    ],
+    authors: [{ name: blog.author }],
+    openGraph: {
+      type: "article",
+      url: blogUrl,
+      title: blog.title,
+      description: plainDescription,
+      publishedTime: blog.createdAt,
+      authors: [blog.author],
+      section: blog.category,
+      tags: [blog.category, blog.type],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: plainDescription,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: blogUrl,
+    },
+  };
+}
 
 // This is now a Server Component - data is fetched on the server
 export default async function BlogDetail({ params }) {
@@ -143,8 +217,20 @@ export default async function BlogDetail({ params }) {
     }
   };
 
+  const structuredData = generateBlogStructuredData(blog, siteUrl);
+  const breadcrumbData = generateBreadcrumbStructuredData(
+    [
+      { name: "Home", url: "/" },
+      { name: "Blogs", url: "/#blogs" },
+      { name: blog.title, url: `/blog/${id}` },
+    ],
+    siteUrl
+  );
+
   return (
     <div className="min-h-screen bg-white">
+      <StructuredData data={structuredData} />
+      <StructuredData data={breadcrumbData} />
       <Header />
 
       <article className="w-full py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">

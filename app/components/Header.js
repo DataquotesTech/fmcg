@@ -62,7 +62,7 @@ export default function Header() {
                     height={200}
                     src="/fmcg-removebg-preview.png"
                     alt="FMCG Logo"
-                    className="w-16 sm:w-20 md:w-24 lg:w-28 h-auto pt-1 sm:pt-2"
+                    className="w-16 sm:w-19 md:w-22 lg:w-24 h-auto pt-1 sm:pt-2"
                   />
                 </Link>
               </div>

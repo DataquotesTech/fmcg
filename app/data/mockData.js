@@ -6,6 +6,7 @@ export const blogCategories = [
   "Retailer Blogs",
   "Distributor Blogs",
   "Aspirant Blogs",
+  "Daily Updates",
 ];
 
 export const blogTypes = [
@@ -14,6 +15,7 @@ export const blogTypes = [
   "Retailer Blog",
   "Distributor Blog",
   "Aspirant Blog",
+  "Daily Updates",
 ];
 
 // Comprehensive mock blogs with content for each category

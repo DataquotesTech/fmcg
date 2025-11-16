@@ -6,7 +6,7 @@ export default function CategoryNav({ activeCategory, onCategoryChange }) {
   const categories = blogCategories;
 
   return (
-    <div className="w-full py-4 sm:py-6 md:py-8 z-40 px-2 sm:px-4">
+    <div className="w-full py-4 sm:py-6 md:py-15 z-40 px-2 sm:px-4">
       <div className="container mx-auto max-w-7xl border-2 border-primary">
         <div className="flex flex-wrap overflow-x-auto scrollbar-hide">
           {categories.map((category) => (
