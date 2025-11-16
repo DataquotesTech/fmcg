@@ -75,11 +75,17 @@ export default function Home() {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      // Scroll to top of blog section
-      const blogsSection = document.getElementById("blogs");
-      if (blogsSection) {
-        blogsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      // Scroll to top of blog section with optimization
+      requestAnimationFrame(() => {
+        const blogsSection = document.getElementById("blogs");
+        if (blogsSection) {
+          blogsSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest",
+          });
+        }
+      });
     }
   };
 

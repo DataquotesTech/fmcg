@@ -22,6 +22,9 @@ html {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
+  /* Optimize scrolling performance */
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 120px;
 }
 
 body {
@@ -29,14 +32,22 @@ body {
   padding: 0;
   overflow: visible;
   min-height: 100%;
+  /* Enable hardware acceleration for smooth scrolling */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* SVG Background */
+/* SVG Background - Optimized for performance */
 html,
 body {
   background-image: url("/background.svg");
   background-repeat: repeat;
   background-size: 700px 700px;
+  /* Use scroll instead of fixed for better performance */
+  background-attachment: scroll;
+  /* Optimize background rendering */
+  background-position: 0 0;
 }
 
 /* Firefox scrollbar */
@@ -44,6 +55,9 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #544d45;
 }
+
+/* Optimize scrolling performance - only apply to elements that need it */
+/* Avoid applying to all elements as it can cause rendering issues */
 
 /* Custom scrollbar - WebKit browsers */
 ::-webkit-scrollbar {

@@ -10,14 +10,18 @@ export default function Header() {
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const headerOffset = 120;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition =
-        elementPosition + window.pageYOffset - headerOffset;
+      // Use requestAnimationFrame for smoother scrolling
+      requestAnimationFrame(() => {
+        const headerOffset = 120;
+        // Use offsetTop for better performance (no layout recalculation)
+        const elementPosition = element.offsetTop;
+        const offsetPosition = elementPosition - headerOffset;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
+        // Smooth scroll with offset
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
       });
     }
     setIsMobileMenuOpen(false);

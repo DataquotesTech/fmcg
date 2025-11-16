@@ -31,14 +31,14 @@ export default function Footer() {
                       e.preventDefault();
                       const element = document.getElementById("about");
                       if (element) {
-                        const headerOffset = 80;
-                        const elementPosition =
-                          element.getBoundingClientRect().top;
-                        const offsetPosition =
-                          elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: "smooth",
+                        requestAnimationFrame(() => {
+                          const headerOffset = 80;
+                          const elementPosition = element.offsetTop;
+                          const offsetPosition = elementPosition - headerOffset;
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth",
+                          });
                         });
                       }
                     }}
@@ -54,14 +54,14 @@ export default function Footer() {
                       e.preventDefault();
                       const element = document.getElementById("blogs");
                       if (element) {
-                        const headerOffset = 80;
-                        const elementPosition =
-                          element.getBoundingClientRect().top;
-                        const offsetPosition =
-                          elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: "smooth",
+                        requestAnimationFrame(() => {
+                          const headerOffset = 80;
+                          const elementPosition = element.offsetTop;
+                          const offsetPosition = elementPosition - headerOffset;
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth",
+                          });
                         });
                       }
                     }}
@@ -77,14 +77,14 @@ export default function Footer() {
                       e.preventDefault();
                       const element = document.getElementById("services");
                       if (element) {
-                        const headerOffset = 80;
-                        const elementPosition =
-                          element.getBoundingClientRect().top;
-                        const offsetPosition =
-                          elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: "smooth",
+                        requestAnimationFrame(() => {
+                          const headerOffset = 80;
+                          const elementPosition = element.offsetTop;
+                          const offsetPosition = elementPosition - headerOffset;
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth",
+                          });
                         });
                       }
                     }}
@@ -100,14 +100,14 @@ export default function Footer() {
                       e.preventDefault();
                       const element = document.getElementById("network");
                       if (element) {
-                        const headerOffset = 80;
-                        const elementPosition =
-                          element.getBoundingClientRect().top;
-                        const offsetPosition =
-                          elementPosition + window.pageYOffset - headerOffset;
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: "smooth",
+                        requestAnimationFrame(() => {
+                          const headerOffset = 80;
+                          const elementPosition = element.offsetTop;
+                          const offsetPosition = elementPosition - headerOffset;
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth",
+                          });
                         });
                       }
                     }}
