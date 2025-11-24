@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { getBlogById } from "../../data/mockData";
+import { getBlogBySlug } from "../../data/mockData";
 import BlogImage from "./BlogImage";
 import BlogContent from "./BlogContent";
 import StructuredData, {
@@ -19,9 +19,8 @@ const siteUrl =
 // Generate metadata for SEO
 export async function generateMetadata({ params }) {
   const resolvedParams = params instanceof Promise ? await params : params;
-  const id = resolvedParams.id;
-  const blogId = !isNaN(id) && !isNaN(parseInt(id)) ? parseInt(id) : id;
-  const blog = await getBlogById(blogId);
+  const slug = resolvedParams.slug;
+  const blog = await getBlogBySlug(slug);
 
   if (!blog) {
     return {
@@ -35,7 +34,7 @@ export async function generateMetadata({ params }) {
     ? blog.description.replace(/<[^>]*>/g, "").substring(0, 160)
     : `Read ${blog.title} by ${blog.author} in the ${blog.category} category.`;
 
-  const blogUrl = `${siteUrl}/blog/${id}`;
+  const blogUrl = `${siteUrl}/blog/${blog.slug}`;
   const imageUrl =
     blog.image &&
     (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
@@ -85,20 +84,15 @@ export async function generateMetadata({ params }) {
 
 // This is now a Server Component - data is fetched on the server
 export default async function BlogDetail({ params }) {
-  // Handle params - in Next.js 15+ it might be a Promise
   const resolvedParams = params instanceof Promise ? await params : params;
-  const id = resolvedParams.id;
+  const slug = resolvedParams.slug;
 
-  if (!id) {
-    console.error("No ID provided in params");
+  if (!slug) {
+    console.error("No slug provided in params");
     notFound();
   }
 
-  // Supabase IDs can be integers or UUIDs (strings)
-  // Try to parse as integer first, otherwise use as string
-  const blogId = !isNaN(id) && !isNaN(parseInt(id)) ? parseInt(id) : id;
-
-  const blog = await getBlogById(blogId);
+  const blog = await getBlogBySlug(slug);
 
   if (!blog) {
     console.error("Blog not found for ID:", blogId, "Type:", typeof blogId);
@@ -222,7 +216,7 @@ export default async function BlogDetail({ params }) {
     [
       { name: "Home", url: "/" },
       { name: "Blogs", url: "/#blogs" },
-      { name: blog.title, url: `/blog/${id}` },
+      { name: blog.title, url: `/blog/${blog.slug}` },
     ],
     siteUrl
   );

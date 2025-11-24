@@ -7,39 +7,43 @@ import Footer from "../components/Footer";
 export default function RegisterPage() {
   // Replace these URLs with your actual Google Sheet links
   const registrationLinks = {
-    professional: "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_1/edit",
-    influencer: "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_2/edit",
-    wholesaler: "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_3/edit",
-    aspirant: "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_4/edit",
-    retailer: "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_5/edit",
+    influencer: "https://docs.google.com/forms/d/e/1FAIpQLSfrRjfKweTB2iEE4e_dQ8kM7EtwY9YuuMxrhKney1hex2iW_A/viewform",
+    wholesaler: "https://docs.google.com/forms/d/e/1FAIpQLSdVVNOarbpw4WkGXSdomo7j1_OSb7qXsO04jSdt4i2HCTBU_Q/viewform",
+    aspirant:
+      "https://docs.google.com/forms/d/e/1FAIpQLScc2YqupVdK-bB72c0AjGcbRzFDrwNGnKJgycD8U4MX3JA7ew/viewform",
+    retailer: "https://docs.google.com/forms/d/e/1FAIpQLSdGuD_1kXF1o9i_CiiEgWlHacTwzzDsWHfGdGhWax9Us-3v5g/viewform",
+    distributor: "https://docs.google.com/forms/d/e/1FAIpQLSfLa5CgSErJx7PrVaAwtarwkwdJHjs61o9tY__pQHcCylHxWg/viewform",
   };
 
   const registrationTypes = [
+   
     {
-      label: "Register as Professional",
-      href: registrationLinks.professional,
-      description: "Join as a professional in the FMCG industry",
-    },
-    {
-      label: "Register as Influencer",
+      label: "Register as proffesional Influencer",
       href: registrationLinks.influencer,
       description: "Connect with brands and grow your influence",
     },
     {
+      label: "Register as Distributor",
+      href: registrationLinks.distributor,
+      description: "Join our distributor network",
+    },
+    {
       label: "Register as Wholesaler",
       href: registrationLinks.wholesaler,
-      description: "Expand your wholesale business network",
+      description: "Expand your trade partner network",
+    },
+    {
+      label: "Register as Retailer",
+      href: registrationLinks.retailer,
+      description: "Join our retailer network",
     },
     {
       label: "Register as Aspirant",
       href: registrationLinks.aspirant,
       description: "Start your journey in the FMCG space",
     },
-    {
-      label: "Register as Retailer",
-      href: registrationLinks.retailer,
-      description: "Join our retail partner network",
-    },
+   
+  
   ];
 
   return (
@@ -88,7 +92,7 @@ export default function RegisterPage() {
                     {type.label}
                   </h3>
                 </div>
-                
+
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6 mt-4">
                   {type.description}
                 </p>

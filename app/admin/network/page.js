@@ -83,7 +83,7 @@ export default function ManageNetwork() {
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Retailers
+                Engagements
               </label>
               <input
                 type="text"
@@ -96,7 +96,7 @@ export default function ManageNetwork() {
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Wholesalers
+                Trade Partners
               </label>
               <input
                 type="text"
@@ -149,7 +149,9 @@ export default function ManageNetwork() {
 
       {/* Preview */}
       <div className="mt-8 sm:mt-10 rounded p-4 sm:p-6 border border-primary bg-primary px-4 sm:px-6 md:px-8 pb-4 sm:pb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-secondary pb-2 sm:pb-3">Preview</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-secondary pb-2 sm:pb-3">
+          Preview
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
             <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
@@ -161,7 +163,7 @@ export default function ManageNetwork() {
           </div>
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
             <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
-              Retailers
+              Engagements
             </p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">
               {stats.retailers}
@@ -169,7 +171,7 @@ export default function ManageNetwork() {
           </div>
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
             <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
-              Wholesalers
+              Trade Partners
             </p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">
               {stats.wholesalers}

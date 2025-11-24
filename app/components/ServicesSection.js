@@ -4,9 +4,10 @@ export default function ServicesSection() {
   const services = [
     {
       id: 1,
-      title: "Content Creation",
+      title: "Brand Promotion & Visibility",
+      tagline: "Reach the right audience with the right message.",
       description:
-        "Professional blog writing and content development services to help you share your expertise and engage your audience.",
+        "Promote your brand through targeted campaigns, engaging content, and industry-specific outreach to maximize visibility and engagement.",
       icon: (
         <svg
           className="w-12 h-12"
@@ -25,9 +26,10 @@ export default function ServicesSection() {
     },
     {
       id: 2,
-      title: "Digital Marketing",
+      title: "Channel Partner Scouting",
+      tagline: "Connect with the right partners for growth.",
       description:
-        "Comprehensive digital marketing strategies to boost your online presence and reach your target audience effectively.",
+        "Identify, evaluate, and engage verified distributors, wholesalers, and retailers to expand your market presence effectively.",
       icon: (
         <svg
           className="w-12 h-12"
@@ -46,9 +48,10 @@ export default function ServicesSection() {
     },
     {
       id: 3,
-      title: "Brand Development",
+      title: "Sales Development Consulting",
+      tagline: "Strategies to accelerate growth.",
       description:
-        "Build a strong brand identity that resonates with your audience and sets you apart from the competition.",
+        "Expert guidance to optimize sales execution, field operations, and market performance for sustainable business growth.",
       icon: (
         <svg
           className="w-12 h-12"
@@ -67,9 +70,10 @@ export default function ServicesSection() {
     },
     {
       id: 4,
-      title: "Community Building",
+      title: "Legal & Advisory Consultation",
+      tagline: "Safeguard your business with expert advice.",
       description:
-        "Foster engaged communities around your brand and create meaningful connections with your followers.",
+        "Receive professional guidance on contracts, agreements, regulatory compliance, and legal matters to protect and grow your business.",
       icon: (
         <svg
           className="w-12 h-12"
@@ -88,9 +92,32 @@ export default function ServicesSection() {
     },
     {
       id: 5,
-      title: "Analytics & Insights",
+      title: "Mentorship & Career Guidance",
+      tagline: "Unlock your professional potential.",
       description:
-        "Data-driven insights and analytics to track your performance and optimize your content strategy.",
+        "Structured mentorship and strategic consulting for aspirants and professionals to build skills, networks, and confidence.",
+      icon: (
+        <svg
+          className="w-12 h-12"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
+          />
+        </svg>
+      ),
+    },
+    {
+      id: 6,
+      title: "Guest Lectures & Corporate Sessions",
+      tagline: "Learn from industry leaders.",
+      description:
+        "High-impact knowledge-sharing sessions for colleges, corporate teams, and forums to inspire learning, growth, and development.",
       icon: (
         <svg
           className="w-12 h-12"
@@ -126,9 +153,14 @@ export default function ServicesSection() {
                   {service.icon}
                 </div>
               </div>
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
                 {service.title}
               </h3>
+              {service.tagline && (
+                <p className="text-primary font-semibold text-sm sm:text-base mb-3 sm:mb-4">
+                  {service.tagline}
+                </p>
+              )}
               <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">
                 {service.description}
               </p>

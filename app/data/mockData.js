@@ -1,25 +1,29 @@
 // Mock data structure for blogs and network stats
 
+import { slugify } from "../utils/slugify";
+import { supabase } from "../../lib/supabase";
+import { cache } from "react";
+
 export const blogCategories = [
   "Professional Blogs",
-  "Wholesaler Blogs",
-  "Retailer Blogs",
+  "Trade Partners Blogs",
+  "Engagements Blogs",
   "Distributor Blogs",
   "Aspirant Blogs",
-  "Daily Updates",
+  "Insights",
 ];
 
 export const blogTypes = [
   "Professional Blog",
-  "Wholesaler Blog",
-  "Retailer Blog",
+  "Trade Partners Blog",
+  "Engagements Blog",
   "Distributor Blog",
   "Aspirant Blog",
-  "Daily Updates",
+  "Insights",
 ];
 
 // Comprehensive mock blogs with content for each category
-export const initialBlogs = [
+const baseBlogs = [
   // Professional Blogs
   {
     id: 1,
@@ -330,7 +334,7 @@ Sustainable distribution practices not only benefit the environment but also oft
     featured: false,
     trending: false,
   },
-  // Wholesaler Blogs
+  // Trade Partners Blogs
   {
     id: 12,
     title: "Building Strong Wholesaler-Retailer Relationships",
@@ -352,8 +356,8 @@ Modern technology facilitates seamless collaboration between wholesalers and ret
 
 Long-term partnerships built on mutual respect, clear communication, and shared value creation drive sustainable growth for both wholesalers and retailers.`,
     author: "Mark Johnson",
-    category: "Wholesaler Blogs",
-    type: "Wholesaler Blog",
+    category: "Trade Partners Blogs",
+    type: "Trade Partners Blog",
     image: "orange",
     createdAt: "2024-01-16",
     featured: true,
@@ -380,8 +384,8 @@ Modern inventory management systems provide real-time visibility, automated reor
 
 Continuous improvement in inventory management through technology adoption, process refinement, and collaboration with partners drives operational excellence and competitive advantage.`,
     author: "Nancy Davis",
-    category: "Wholesaler Blogs",
-    type: "Wholesaler Blog",
+    category: "Trade Partners Blogs",
+    type: "Trade Partners Blog",
     image: "red",
     createdAt: "2024-01-24",
     featured: false,
@@ -408,8 +412,8 @@ Pricing strategy must align with market positioning. Premium pricing requires su
 
 Successful wholesale pricing strategies balance profitability with competitiveness, creating value for both the wholesaler and retail customers.`,
     author: "Steven Lee",
-    category: "Wholesaler Blogs",
-    type: "Wholesaler Blog",
+    category: "Trade Partners Blogs",
+    type: "Trade Partners Blog",
     image: "teal",
     createdAt: "2024-02-01",
     featured: false,
@@ -436,8 +440,8 @@ Automation technologies including warehouse management systems, automated pickin
 
 Digital transformation requires investment in technology, process redesign, and change management, but delivers significant benefits in efficiency, customer satisfaction, and competitive positioning.`,
     author: "Karen White",
-    category: "Wholesaler Blogs",
-    type: "Wholesaler Blog",
+    category: "Trade Partners Blogs",
+    type: "Trade Partners Blog",
     image: "orange",
     createdAt: "2024-02-10",
     featured: false,
@@ -464,14 +468,14 @@ Growth often requires investment in facilities, technology, and personnel. Plann
 
 Successful expansion requires clear strategy, adequate resources, and careful execution that maintains the quality and efficiency that drive customer loyalty.`,
     author: "Christopher Taylor",
-    category: "Wholesaler Blogs",
-    type: "Wholesaler Blog",
+    category: "Trade Partners Blogs",
+    type: "Trade Partners Blog",
     image: "red",
     createdAt: "2024-02-18",
     featured: false,
     trending: false,
   },
-  // Retailer Blogs
+  // Engagements Blogs
   {
     id: 17,
     title: "Retail Store Layout Optimization for FMCG Products",
@@ -493,8 +497,8 @@ Attractive displays, clear signage, and strategic use of promotional space enhan
 
 Regular analysis of sales data, customer feedback, and shopping patterns enables continuous optimization of store layouts to improve performance and customer satisfaction.`,
     author: "Amanda Foster",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "orange",
     createdAt: "2024-01-17",
     featured: true,
@@ -521,8 +525,8 @@ Real-time inventory visibility across channels prevents overselling and enables 
 
 Success in omnichannel retailing requires technology investment, process integration, and organizational alignment that prioritizes customer experience across all touchpoints.`,
     author: "Brian Moore",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "red",
     createdAt: "2024-01-26",
     featured: false,
@@ -549,8 +553,8 @@ Personalized service, loyalty programs, and special attention to regular custome
 
 Measuring customer satisfaction through surveys, feedback, and analytics enables continuous improvement in the customer experience that drives loyalty and growth.`,
     author: "Michelle Clark",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "teal",
     createdAt: "2024-02-03",
     featured: false,
@@ -577,8 +581,8 @@ Point-of-sale systems, inventory management software, and analytics tools provid
 
 Regular analysis of turnover rates by category, product, and season enables identification of optimization opportunities that improve profitability and operational efficiency.`,
     author: "Kevin Adams",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "orange",
     createdAt: "2024-02-11",
     featured: false,
@@ -605,8 +609,8 @@ Effective marketing of private label products requires strategic placement, prom
 
 Successful private label strategies create value for customers while improving retailer margins and building brand equity that drives long-term competitive advantage.`,
     author: "Rachel Green",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "red",
     createdAt: "2024-02-19",
     featured: false,
@@ -633,14 +637,19 @@ Mobile apps, digital signage, and self-service technologies enhance customer con
 
 Successful technology integration requires clear strategy, adequate investment, change management, and continuous evaluation to ensure technologies deliver expected benefits and support business objectives.`,
     author: "Jason Miller",
-    category: "Retailer Blogs",
-    type: "Retailer Blog",
+    category: "Engagements Blogs",
+    type: "Engagements Blog",
     image: "teal",
     createdAt: "2024-02-25",
     featured: false,
     trending: false,
   },
 ];
+
+export const initialBlogs = baseBlogs.map((blog) => ({
+  ...blog,
+  slug: blog.slug || slugify(blog.title),
+}));
 
 // Initial network stats
 export const initialNetworkStats = {
@@ -650,10 +659,6 @@ export const initialNetworkStats = {
   distributors: "0",
   aspirants: "0",
 };
-
-// Supabase helper functions
-import { supabase } from "../../lib/supabase";
-import { cache } from "react";
 
 // Get all blogs from Supabase
 // Pass { includeContent: true } when you need the full HTML content (e.g., admin edit form)
@@ -670,6 +675,7 @@ export const getBlogs = async ({ includeContent = false } = {}) => {
       "created_at",
       "featured",
       "trending",
+      "slug",
     ];
 
     if (includeContent) {
@@ -701,6 +707,7 @@ export const getBlogs = async ({ includeContent = false } = {}) => {
         : new Date().toISOString().split("T")[0],
       featured: blog.featured || false,
       trending: blog.trending || false,
+      slug: blog.slug || slugify(blog.title),
     }));
   } catch (error) {
     console.error("Error in getBlogs:", error);
@@ -719,7 +726,7 @@ export const getBlogById = cache(async (id) => {
     const { data, error } = await supabase
       .from("blogs")
       .select(
-        "id, title, description, content, author, category, type, image, created_at, featured, trending"
+        "id, title, description, content, author, category, type, image, created_at, featured, trending, slug"
       )
       .eq("id", id)
       .single();
@@ -755,9 +762,62 @@ export const getBlogById = cache(async (id) => {
         : new Date().toISOString().split("T")[0],
       featured: data.featured || false,
       trending: data.trending || false,
+      slug: data.slug || slugify(data.title),
     };
   } catch (error) {
     console.error("Error in getBlogById:", error);
+    return null;
+  }
+});
+
+export const getBlogBySlug = cache(async (slug) => {
+  try {
+    if (!slug) {
+      console.error("getBlogBySlug: No slug provided");
+      return null;
+    }
+
+    const normalizedSlug = slugify(slug);
+
+    const { data, error } = await supabase
+      .from("blogs")
+      .select(
+        "id, title, description, content, author, category, type, image, created_at, featured, trending, slug"
+      )
+      .eq("slug", normalizedSlug)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error("Supabase error in getBlogBySlug:", error);
+    }
+
+    if (!data) {
+      // Fallback: look through cached blogs
+      const blogs = await getBlogs({ includeContent: true });
+      const fallbackBlog = blogs.find(
+        (blog) => (blog.slug || slugify(blog.title)) === normalizedSlug
+      );
+      return fallbackBlog || null;
+    }
+
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      author: data.author,
+      category: data.category,
+      type: data.type,
+      image: data.image || "orange",
+      createdAt: data.created_at
+        ? new Date(data.created_at).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      featured: data.featured || false,
+      trending: data.trending || false,
+      slug: data.slug || normalizedSlug,
+    };
+  } catch (error) {
+    console.error("Error in getBlogBySlug:", error);
     return null;
   }
 });
@@ -768,7 +828,7 @@ export const getBlogsByCategory = cache(async (category) => {
     const { data, error } = await supabase
       .from("blogs")
       .select(
-        "id, title, description, author, category, type, image, created_at, featured, trending"
+        "id, title, description, author, category, type, image, created_at, featured, trending, slug"
       )
       .eq("category", category)
       .eq("featured", false)
@@ -793,6 +853,7 @@ export const getBlogsByCategory = cache(async (category) => {
         : new Date().toISOString().split("T")[0],
       featured: blog.featured || false,
       trending: blog.trending || false,
+      slug: blog.slug || slugify(blog.title),
     }));
   } catch (error) {
     console.error("Error in getBlogsByCategory:", error);
@@ -806,7 +867,7 @@ export const getFeaturedBlog = cache(async (category) => {
     const { data, error } = await supabase
       .from("blogs")
       .select(
-        "id, title, description, author, category, type, image, created_at, featured, trending"
+        "id, title, description, author, category, type, image, created_at, featured, trending, slug"
       )
       .eq("category", category)
       .eq("featured", true)
@@ -829,6 +890,7 @@ export const getFeaturedBlog = cache(async (category) => {
         : new Date().toISOString().split("T")[0],
       featured: data.featured || false,
       trending: data.trending || false,
+      slug: data.slug || slugify(data.title),
     };
   } catch (error) {
     return null;
@@ -841,7 +903,7 @@ export const getTrendingBlog = cache(async (category) => {
     const { data, error } = await supabase
       .from("blogs")
       .select(
-        "id, title, description, author, category, type, image, created_at, featured, trending"
+        "id, title, description, author, category, type, image, created_at, featured, trending, slug"
       )
       .eq("category", category)
       .eq("trending", true)
@@ -864,6 +926,7 @@ export const getTrendingBlog = cache(async (category) => {
         : new Date().toISOString().split("T")[0],
       featured: data.featured || false,
       trending: data.trending || false,
+      slug: data.slug || slugify(data.title),
     };
   } catch (error) {
     return null;
@@ -921,6 +984,7 @@ export const createBlog = async (blogData) => {
       featured: blogData.featured || false,
       trending: blogData.trending || false,
       created_by: user?.id || null,
+      slug: blogData.slug || slugify(blogData.title),
     };
 
     const { data, error } = await supabase
@@ -978,6 +1042,7 @@ export const updateBlog = async (id, blogData) => {
       featured: blogData.featured,
       trending: blogData.trending,
       updated_by: user?.id || null,
+      slug: blogData.slug || slugify(blogData.title),
     };
 
     const { data, error } = await supabase

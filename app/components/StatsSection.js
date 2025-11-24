@@ -33,11 +33,11 @@ export default function StatsSection() {
       value: stats.professional,
     },
     {
-      label: "Retailers",
+      label: "Engagements",
       value: stats.retailers,
     },
     {
-      label: "Wholesalers",
+      label: "Trade Partners",
       value: stats.wholesalers,
     },
     {

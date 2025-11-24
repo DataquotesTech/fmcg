@@ -10,9 +10,10 @@ export default function StructuredData({ data }) {
 
 // Helper function to generate BlogPosting structured data
 export function generateBlogStructuredData(blog, siteUrl) {
-  const blogUrl = `${siteUrl}/blog/${blog.id}`;
+  const blogUrl = `${siteUrl}/blog/${blog.slug || blog.id}`;
   const imageUrl =
-    blog.image && (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
+    blog.image &&
+    (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
       ? blog.image
       : `${siteUrl}/fmcg-removebg-preview.png`;
 
@@ -95,4 +96,3 @@ export function generateCategoryStructuredData(category, siteUrl) {
     },
   };
 }
-

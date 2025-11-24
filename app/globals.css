@@ -32,8 +32,6 @@ body {
   padding: 0;
   overflow: visible;
   min-height: 100%;
-  /* Enable hardware acceleration for smooth scrolling */
-  transform: translateZ(0);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -21,6 +21,7 @@ import {
   blogCategories,
 } from "./data/mockData";
 import Link from "next/link";
+import { slugify } from "./utils/slugify";
 
 export default function Home() {
   const [blogs, setBlogs] = useState([]);
@@ -29,6 +30,12 @@ export default function Home() {
   const [trendingBlog, setTrendingBlog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  const getBlogHref = (blog) => {
+    if (!blog) return "#";
+    const slug = blog.slug || slugify(blog.title || `${blog.id || ""}`);
+    return `/blog/${slug}`;
+  };
 
   useEffect(() => {
     // Load blogs and set featured/trending
@@ -293,12 +300,21 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="w-full py-18 px-6 sm:px-8 lg:px-10">
-        <div className="container mx-auto flex flex-col items-center justify-center">
+      <section
+        className="w-full py-18 px-6 sm:px-8 lg:px-10 relative"
+        style={{
+          backgroundImage: 'url("/background_image.jpg")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-white/10"></div>
+        <div className="container mx-auto flex flex-col items-center justify-end relative z-10 min-h-100">
           <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-5">
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
+            {/* <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community
-            </h1>
+            </h1> */}
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center pt-6">
               <Link
                 href="/register"
@@ -308,7 +324,7 @@ export default function Home() {
               </Link>
               <a
                 href="#blogs"
-                className="w-full sm:w-auto  text-primary border-2 border-primary px-10 py-4.5 font-semibold text-lg"
+                className="w-full sm:w-auto  text-primary border-2 border-primary px-10 py-4.5 font-semibold text-lg bg-amber-50"
               >
                 Explore Blogs
               </a>
@@ -337,7 +353,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16">
                   {/* Trending Blog Card - Left Side */}
                   <Link
-                    href={`/blog/${trendingBlog.id}`}
+                    href={getBlogHref(trendingBlog)}
                     className="bg-white rounded overflow-hidden border-2 border-primary transition-all duration-300 cursor-pointer group relative "
                   >
                     {/* Northeast Arrow - Top Right */}
@@ -384,7 +400,7 @@ export default function Home() {
 
                   {/* Featured Blog Card - Right Side */}
                   <Link
-                    href={`/blog/${featuredBlog.id}`}
+                    href={getBlogHref(featuredBlog)}
                     className="bg-white rounded overflow-hidden border-2 border-primary  transition-all duration-300 cursor-pointer group relative"
                   >
                     {/* Northeast Arrow - Top Right */}
@@ -432,7 +448,7 @@ export default function Home() {
               ) : featuredBlog ? (
                 // Only Featured - Full Width
                 <Link
-                  href={`/blog/${featuredBlog.id}`}
+                  href={getBlogHref(featuredBlog)}
                   className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
                 >
                   {/* Northeast Arrow - Top Right */}
@@ -475,7 +491,7 @@ export default function Home() {
               ) : (
                 // Only Trending - Full Width
                 <Link
-                  href={`/blog/${trendingBlog.id}`}
+                  href={getBlogHref(trendingBlog)}
                   className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
                 >
                   {/* Northeast Arrow - Top Right */}
@@ -533,7 +549,7 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
                 {paginatedBlogs.map((blog, index) => (
-                  <Link key={blog.id} href={`/blog/${blog.id}`}>
+                  <Link key={blog.id} href={getBlogHref(blog)}>
                     <BlogCard
                       image={getImagePlaceholder(
                         blog.image,

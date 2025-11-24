@@ -5,8 +5,10 @@ export default function WhatsAppButton() {
   // Example: "1234567890" for +1 234 567 890
   const whatsappNumber = "1234567890"; // Change this to your WhatsApp number
   const message = "Hello! I'm interested in learning more."; // Optional: pre-filled message
-  
-  const whatsappUrl = `https://wa.me/${whatsappNumber}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
+
+  const whatsappUrl = `https://wa.me/${whatsappNumber}${
+    message ? `?text=${encodeURIComponent(message)}` : ""
+  }`;
 
   return (
     <a
@@ -27,4 +29,3 @@ export default function WhatsAppButton() {
     </a>
   );
 }
-
