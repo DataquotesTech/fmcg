@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getBlogs, updateBlog, blogCategories } from "../../data/mockData";
+import { ensureSlug } from "../../utils/slugify";
 import Toast from "../../components/Toast";
 
 export default function ManageFeatured() {
@@ -46,7 +47,11 @@ export default function ManageFeatured() {
     );
     for (const blog of categoryBlogs) {
       try {
-        await updateBlog(blog.id, { ...blog, featured: false });
+        await updateBlog(blog.id, {
+          ...blog,
+          featured: false,
+          slug: ensureSlug(blog),
+        });
       } catch (error) {
         console.error("Error updating blog:", error);
       }
@@ -60,6 +65,7 @@ export default function ManageFeatured() {
           await updateBlog(blogToFeature.id, {
             ...blogToFeature,
             featured: true,
+            slug: ensureSlug(blogToFeature),
           });
         } catch (error) {
           console.error("Error updating blog:", error);

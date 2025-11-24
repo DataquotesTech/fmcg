@@ -59,16 +59,16 @@ export default function StatsSection() {
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-secondary pb-4 sm:pb-6 text-center">
           Our Network
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-6 w-full">
           {statsArray.map((stat, index) => (
             <div
               key={index}
               className="bg-white rounded p-6 sm:p-8 md:p-10 lg:p-12 transition-all duration-300 border border-gray-100 text-center"
             >
-              <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-600 pb-6 sm:pb-8 md:pb-10 uppercase tracking-wide">
+              <p className="text-sm sm:text-base md:text-sm font-semibold text-gray-600 pb-6 sm:pb-8 md:pb-10 uppercase tracking-wide">
                 {stat.label}
               </p>
-              <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center">
+              <p className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 text-center">
                 {stat.value}
               </p>
             </div>

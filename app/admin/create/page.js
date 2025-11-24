@@ -24,19 +24,19 @@ const computeWordCount = (content) => {
 // Extract first image URL from HTML content
 const extractFirstImageFromContent = (htmlContent) => {
   if (!htmlContent) return null;
-  
+
   // Try to find img tag with src attribute
   const imgMatch = htmlContent.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
   if (imgMatch && imgMatch[1]) {
     return imgMatch[1];
   }
-  
+
   // Try to find YouTube iframe (for video thumbnails)
   const youtubeMatch = htmlContent.match(/youtube\.com\/embed\/([^"'\s?]+)/i);
   if (youtubeMatch && youtubeMatch[1]) {
     return `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`;
   }
-  
+
   return null;
 };
 
@@ -83,14 +83,17 @@ function CreateBlogContent() {
     setBlogContent(content);
     // Calculate word count from HTML content (strip HTML tags)
     setWordCount(computeWordCount(content));
-    
+
     // If no featured image is set, try to extract first image from content
     if (!imageUrl && !imageFile) {
       const contentImage = extractFirstImageFromContent(content);
       if (contentImage) {
         setImageUrl(contentImage);
         // Create a preview if it's a URL
-        if (contentImage.startsWith("http://") || contentImage.startsWith("https://")) {
+        if (
+          contentImage.startsWith("http://") ||
+          contentImage.startsWith("https://")
+        ) {
           setImagePreview(contentImage);
         }
       }
@@ -125,6 +128,12 @@ function CreateBlogContent() {
 
     setSavingDraft(true);
     try {
+      let draftImageUrl = imageUrl;
+
+      if (imageFile) {
+        draftImageUrl = await uploadImage();
+      }
+
       const savedDraft = await saveBlogDraft({
         id: draftId,
         authorName,
@@ -132,8 +141,8 @@ function CreateBlogContent() {
         blogContent,
         blogType,
         blogCategory,
-        imageUrl,
-        imagePreview,
+        imageUrl: draftImageUrl,
+        imagePreview: imagePreview || draftImageUrl || null,
         wordCount,
       });
 
@@ -282,7 +291,7 @@ function CreateBlogContent() {
     reader.readAsDataURL(file);
   };
 
-  const uploadImage = async () => {
+  const uploadImage = async (bucket = "blog-images") => {
     if (!imageFile) {
       return imageUrl || "orange"; // Return existing URL or default
     }
@@ -293,11 +302,10 @@ function CreateBlogContent() {
       const fileName = `${Math.random()
         .toString(36)
         .substring(2)}_${Date.now()}.${fileExt}`;
-      // Don't include bucket name in path - it's already specified in .from()
       const filePath = fileName;
 
-      const { data, error: uploadError } = await supabase.storage
-        .from("blog-images")
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
         .upload(filePath, imageFile, {
           cacheControl: "3600",
           upsert: false,
@@ -305,7 +313,6 @@ function CreateBlogContent() {
 
       if (uploadError) {
         console.error("Upload error details:", uploadError);
-        // Show more specific error message
         let errorMessage = "Failed to upload image. ";
         if (uploadError.message) {
           errorMessage += uploadError.message;
@@ -319,10 +326,12 @@ function CreateBlogContent() {
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from("blog-images").getPublicUrl(filePath);
+      } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
       console.log("Image uploaded successfully:", publicUrl);
       setImageUrl(publicUrl);
+      setImagePreview(publicUrl);
+      setImageFile(null);
       return publicUrl;
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -363,7 +372,7 @@ function CreateBlogContent() {
       };
 
       let finalImageUrl = imageUrl;
-      
+
       // If no featured image is set, try to extract first image from content
       if (!finalImageUrl && !imageFile) {
         const contentImage = extractFirstImageFromContent(blogContent);
@@ -372,12 +381,12 @@ function CreateBlogContent() {
           setImageUrl(contentImage); // Update state for consistency
         }
       }
-      
+
       // If still no image, use random default
       if (!finalImageUrl && !imageFile) {
         finalImageUrl = getRandomImage();
       }
-      
+
       // Upload featured image if a file was selected
       if (imageFile) {
         try {
@@ -485,7 +494,10 @@ function CreateBlogContent() {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 md:space-y-8">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 sm:space-y-6 md:space-y-8"
+      >
         {/* Card 1: Author Name & Blog Post Title */}
         <div className="bg-white rounded p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">

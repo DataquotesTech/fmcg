@@ -182,6 +182,7 @@ export default function Header() {
                   href="#blogs"
                   onClick={(e) => {
                     e.preventDefault();
+                    window.location.href = "/#blogs";
                     scrollToSection("blogs");
                   }}
                   className="font-semibold text-sm md:text-base lg:text-lg px-3 md:px-4 lg:px-6 hover:underline hover:text-black transition-all duration-300 h-full flex items-center justify-self-center cursor-pointer"
@@ -192,6 +193,7 @@ export default function Header() {
                   href="#services"
                   onClick={(e) => {
                     e.preventDefault();
+                    window.location.href = "/#services";
                     scrollToSection("services");
                   }}
                   className="font-semibold text-sm md:text-base lg:text-lg px-3 md:px-4 lg:px-6 hover:underline hover:text-black transition-all duration-300 h-full flex items-center justify-self-center cursor-pointer"
@@ -202,6 +204,7 @@ export default function Header() {
                   href="#network"
                   onClick={(e) => {
                     e.preventDefault();
+                    window.location.href = "/#network";
                     scrollToSection("network");
                   }}
                   className="font-semibold text-sm md:text-base lg:text-lg px-3 md:px-4 lg:px-6 hover:underline hover:text-black transition-all duration-300 h-full flex items-center justify-self-center cursor-pointer"
@@ -212,6 +215,7 @@ export default function Header() {
                   href="#about"
                   onClick={(e) => {
                     e.preventDefault();
+                    window.location.href = "/#about";
                     scrollToSection("about");
                   }}
                   className="font-semibold text-sm md:text-base lg:text-lg px-3 md:px-4 lg:px-6 hover:underline hover:text-black transition-all duration-300 h-full flex items-center justify-self-center cursor-pointer"
@@ -288,9 +292,9 @@ export default function Header() {
               </div>
 
               {/* Mobile Menu Content */}
-              <div className="flex flex-col h-full px-6 py-20">
+              <div className="flex flex-col h-full px-6 py-10 pb-35">
                 {/* Logo */}
-                <div className="mb-12 flex justify-center">
+                <div className="mb-5 flex justify-center">
                   <Link
                     href="/"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -310,9 +314,10 @@ export default function Header() {
                 <nav className="flex-1 flex flex-col justify-center space-y-6">
                   <a
                     href="#blogs"
-                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors py-3 border-b-2 border-transparent hover:border-primary"
+                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors  border-b-2 border-transparent hover:border-primary"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#blogs";
                       scrollToSection("blogs");
                     }}
                   >
@@ -320,9 +325,10 @@ export default function Header() {
                   </a>
                   <a
                     href="#services"
-                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors py-3 border-b-2 border-transparent hover:border-primary"
+                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors  border-b-2 border-transparent hover:border-primary"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#services";
                       scrollToSection("services");
                     }}
                   >
@@ -330,9 +336,10 @@ export default function Header() {
                   </a>
                   <a
                     href="#network"
-                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors py-3 border-b-2 border-transparent hover:border-primary"
+                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors  border-b-2 border-transparent hover:border-primary"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#network";
                       scrollToSection("network");
                     }}
                   >
@@ -340,9 +347,10 @@ export default function Header() {
                   </a>
                   <a
                     href="#about"
-                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors py-3 border-b-2 border-transparent hover:border-primary"
+                    className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors  border-b-2 border-transparent hover:border-primary"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#about";
                       scrollToSection("about");
                     }}
                   >
@@ -351,7 +359,7 @@ export default function Header() {
                 </nav>
 
                 {/* Register Button */}
-                <div className="mb-8">
+                <div className="mb-2">
                   <a
                     href="/register"
                     className="block w-full bg-primary text-secondary px-6 py-4 rounded-xl hover:bg-primary/90 transition-colors font-bold text-lg text-center"
@@ -362,7 +370,7 @@ export default function Header() {
                 </div>
 
                 {/* Social Links */}
-                <div className="border-t-2 border-gray-200 pt-8">
+                <div className="border-t-2 border-gray-200 pt-8 pb-8">
                   <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">
                     Follow Us
                   </h3>

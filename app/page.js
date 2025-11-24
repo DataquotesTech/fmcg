@@ -301,16 +301,16 @@ export default function Home() {
 
       {/* Hero Section */}
       <section
-        className="w-full py-18 px-6 sm:px-8 lg:px-10 relative"
+        className="w-full py-18 px-6 sm:px-8 lg:px-10 relative bottom-10"
         style={{
           backgroundImage: 'url("/background_image.jpg")',
-          backgroundSize: "cover",
+          backgroundSize: " cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="absolute inset-0 bg-white/10"></div>
-        <div className="container mx-auto flex flex-col items-center justify-end relative z-10 min-h-100">
+        <div className="absolute inset-0 "></div>
+        <div className="container mx-auto flex flex-col items-center justify-end relative z-10 min-h-110">
           <div className="text-center max-w-4xl mx-auto space-y-10 md:space-y-5">
             {/* <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community

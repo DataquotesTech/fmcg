@@ -283,7 +283,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-12 md:mt-16 pt-8 md:pt-10 border-t-2 border-gray-200 text-center">
           <p className="text-gray-600 text-sm md:text-base">
-            © 2026 FMCG Influencer. All Rights Reserved.
+            © 2026 FMCGInfluencers.com All Rights Reserved.
           </p>
         </div>
       </div>

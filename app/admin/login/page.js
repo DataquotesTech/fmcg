@@ -94,7 +94,7 @@ export default function AdminLogin() {
 
   return (
     <div className="flex items-center justify-center p-4 sm:p-6 md:p-8 min-h-screen">
-      <div className="w-full max-w-2xl border-2 border-primary p-6 sm:p-8 md:p-10 lg:p-12">
+      <div className="w-full max-w-2xl border-2 border-primary p-6 sm:p-8   rounded-xl">
         {/* Icon */}
         <div className="flex justify-center mb-8">
           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center ">
@@ -122,9 +122,9 @@ export default function AdminLogin() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+          <div className=" rounded-xl">
             <p className="text-red-600 text-sm font-semibold text-center">
-              {error}
+             ! {error}
             </p>
           </div>
         )}
