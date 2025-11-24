@@ -315,7 +315,7 @@ export default function Home() {
             {/* <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-[#10024d] leading-[1.05] tracking-tight">
               Helping Influencer To Build Their Brand & Community
             </h1> */}
-            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center pt-6">
+            <div className="flex flex-col sm:flex-row gap-5 justify-center relative top-10 ">
               <Link
                 href="/register"
                 className="w-full sm:w-auto bg-[#10024d]  text-secondary px-15 py-4.5 hover:bg-[#10024d]/80 border-2 border-primary transition-all font-semibold text-lg  "
