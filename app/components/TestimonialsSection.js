@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
                   ))}
                 </div>
                 <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-6 text-wrap">
-                  &quot;{testimonial.content}&quot;
+                 {testimonial.content}
                 </p>
                 <div>
                   <p className="font-semibold text-gray-900 text-base md:text-lg">

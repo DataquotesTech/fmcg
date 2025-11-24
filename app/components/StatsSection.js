@@ -29,20 +29,20 @@ export default function StatsSection() {
 
   const statsArray = [
     {
-      label: "Professional",
+      label: "Professionals",
       value: stats.professional,
-    },
-    {
-      label: "Engagements",
-      value: stats.retailers,
-    },
-    {
-      label: "Trade Partners",
-      value: stats.wholesalers,
     },
     {
       label: "Distributors",
       value: stats.distributors,
+    },
+    {
+      label: "Wholesalers",
+      value: stats.wholesalers,
+    },
+    {
+      label: "Retailers",
+      value: stats.retailers,
     },
     {
       label: "Aspirants",

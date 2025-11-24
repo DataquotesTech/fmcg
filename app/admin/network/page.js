@@ -70,39 +70,13 @@ export default function ManageNetwork() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-4">
-                Professional
+                Professionals
               </label>
               <input
                 type="text"
                 value={stats.professional}
                 onChange={(e) => handleChange("professional", e.target.value)}
                 placeholder="e.g., 1,500"
-                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-4">
-                Engagements
-              </label>
-              <input
-                type="text"
-                value={stats.retailers}
-                onChange={(e) => handleChange("retailers", e.target.value)}
-                placeholder="e.g., 2,000"
-                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-4">
-                Trade Partners
-              </label>
-              <input
-                type="text"
-                value={stats.wholesalers}
-                onChange={(e) => handleChange("wholesalers", e.target.value)}
-                placeholder="e.g., 1,200"
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 required
               />
@@ -116,6 +90,32 @@ export default function ManageNetwork() {
                 value={stats.distributors}
                 onChange={(e) => handleChange("distributors", e.target.value)}
                 placeholder="e.g., 800"
+                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4">
+                Wholesalers
+              </label>
+              <input
+                type="text"
+                value={stats.wholesalers}
+                onChange={(e) => handleChange("wholesalers", e.target.value)}
+                placeholder="e.g., 1,200"
+                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4">
+                Retailers
+              </label>
+              <input
+                type="text"
+                value={stats.retailers}
+                onChange={(e) => handleChange("retailers", e.target.value)}
+                placeholder="e.g., 2,000"
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
                 required
               />
@@ -155,26 +155,10 @@ export default function ManageNetwork() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
             <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
-              Professional
+              Professionals
             </p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">
               {stats.professional}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
-            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
-              Engagements
-            </p>
-            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
-              {stats.retailers}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
-            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
-              Trade Partners
-            </p>
-            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
-              {stats.wholesalers}
             </p>
           </div>
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
@@ -183,6 +167,22 @@ export default function ManageNetwork() {
             </p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">
               {stats.distributors}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Wholesalers
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.wholesalers}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">
+            <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-4 sm:mb-6 uppercase tracking-wide">
+              Retailers
+            </p>
+            <p className="text-3xl sm:text-4xl font-bold text-gray-900">
+              {stats.retailers}
             </p>
           </div>
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center flex flex-col items-center justify-center">

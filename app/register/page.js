@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const registrationTypes = [
    
     {
-      label: "Register as proffesional Influencer",
+      label: "Register as professional Influencer",
       href: registrationLinks.influencer,
       description: "Connect with brands and grow your influence",
     },
