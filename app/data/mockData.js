@@ -7,18 +7,19 @@ import { cache } from "react";
 export const blogCategories = [
   "Professional Blogs",
   "Trade Partners Blogs",
-  "Engagements Blogs",
+ 
   "Distributor Blogs",
   "Aspirant Blogs",
+  "Engagements",
   "Insights",
 ];
 
 export const blogTypes = [
   "Professional Blog",
   "Trade Partners Blog",
-  "Engagements Blog",
   "Distributor Blog",
   "Aspirant Blog",
+  "Engagements Blog",
   "Insights",
 ];
 
@@ -475,7 +476,7 @@ Successful expansion requires clear strategy, adequate resources, and careful ex
     featured: false,
     trending: false,
   },
-  // Engagements Blogs
+  // Engagements
   {
     id: 17,
     title: "Retail Store Layout Optimization for FMCG Products",
@@ -497,7 +498,7 @@ Attractive displays, clear signage, and strategic use of promotional space enhan
 
 Regular analysis of sales data, customer feedback, and shopping patterns enables continuous optimization of store layouts to improve performance and customer satisfaction.`,
     author: "Amanda Foster",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "orange",
     createdAt: "2024-01-17",
@@ -525,7 +526,7 @@ Real-time inventory visibility across channels prevents overselling and enables 
 
 Success in omnichannel retailing requires technology investment, process integration, and organizational alignment that prioritizes customer experience across all touchpoints.`,
     author: "Brian Moore",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "red",
     createdAt: "2024-01-26",
@@ -553,7 +554,7 @@ Personalized service, loyalty programs, and special attention to regular custome
 
 Measuring customer satisfaction through surveys, feedback, and analytics enables continuous improvement in the customer experience that drives loyalty and growth.`,
     author: "Michelle Clark",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "teal",
     createdAt: "2024-02-03",
@@ -581,7 +582,7 @@ Point-of-sale systems, inventory management software, and analytics tools provid
 
 Regular analysis of turnover rates by category, product, and season enables identification of optimization opportunities that improve profitability and operational efficiency.`,
     author: "Kevin Adams",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "orange",
     createdAt: "2024-02-11",
@@ -609,7 +610,7 @@ Effective marketing of private label products requires strategic placement, prom
 
 Successful private label strategies create value for customers while improving retailer margins and building brand equity that drives long-term competitive advantage.`,
     author: "Rachel Green",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "red",
     createdAt: "2024-02-19",
@@ -637,7 +638,7 @@ Mobile apps, digital signage, and self-service technologies enhance customer con
 
 Successful technology integration requires clear strategy, adequate investment, change management, and continuous evaluation to ensure technologies deliver expected benefits and support business objectives.`,
     author: "Jason Miller",
-    category: "Engagements Blogs",
+    category: "Engagements",
     type: "Engagements Blog",
     image: "teal",
     createdAt: "2024-02-25",

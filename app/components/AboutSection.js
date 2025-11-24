@@ -26,7 +26,7 @@ export default function AboutSection() {
             </h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Our mission is to empower the industry through knowledge,
-              connections, and solutions that create long-term value.
+              connections, and solutions that create longterm value.
             </p>
           </div>
         </div>

@@ -3,16 +3,10 @@
 export default function WhatsAppButton() {
   // Replace with your WhatsApp number (format: country code + number without + or spaces)
   // Example: "1234567890" for +1 234 567 890
-  const whatsappNumber = "1234567890"; // Change this to your WhatsApp number
-  const message = "Hello! I'm interested in learning more."; // Optional: pre-filled message
-
-  const whatsappUrl = `https://wa.me/${whatsappNumber}${
-    message ? `?text=${encodeURIComponent(message)}` : ""
-  }`;
-
+ 
   return (
     <a
-      href={whatsappUrl}
+      href="https://chat.whatsapp.com/Hyb8KiaMTV7C8l2jxDOUuq?mode=wwt"
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 bg-primary hover:bg-secondary border-2 border-primary text-secondary hover:text-primary w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group"

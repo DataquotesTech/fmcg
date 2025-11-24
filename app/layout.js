@@ -133,7 +133,7 @@ export const metadata = {
     "FMCG blogs",
     "Professional Blogs",
     "Trade Partners Blogs",
-    "Engagements Blogs",
+    "Engagements",
     "Distributor Blogs",
     "Insights",
     "FMCG industry insights",

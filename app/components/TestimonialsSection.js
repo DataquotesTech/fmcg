@@ -4,60 +4,46 @@ export default function TestimonialsSection() {
   const testimonials = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      role: "Content Creator",
-      company: "Tech Influencer",
+      name: "Neha Verma",
+      role: "Area Sales Manager",
       content:
-        "This platform has transformed how I create and share content. The tools and community support are incredible!",
+        "This platform helped me expand my network, access industry insights, and explore new growth opportunities.",
       rating: 5,
     },
     {
       id: 2,
-      name: "Michael Chen",
-      role: "Digital Marketer",
-      company: "Marketing Pro",
+      name: "Krishna",
+      role: "FMCG Distributor",
       content:
-        "The analytics and insights provided here have helped me grow my audience by 300% in just 3 months.",
+        "Finding the right brands to partner with is now seamless thanks to FMCGInfluencers.com.",
       rating: 5,
     },
     {
       id: 3,
-      name: "Emily Rodriguez",
-      role: "Brand Strategist",
-      company: "Brand Builders",
+      name: "Ramachadraiah",
+      role: "Wholesaler",
       content:
-        "Best platform for influencers looking to build a strong brand presence. Highly recommend!",
+        "FMCGInfluencers.com helped me reach genuine retailers and grow my wholesale network faster than ever.",
       rating: 5,
     },
     {
       id: 4,
-      name: "David Thompson",
-      role: "Social Media Manager",
-      company: "Social Experts",
+      name: "Raghavendra",
+      role: "Retail Store Owner",
       content:
-        "The community here is amazing and the resources are top-notch. This is a game-changer for content creators.",
+        "FMCGInfluencers.com helped me discover new products and reliable suppliers quickly.",
       rating: 5,
     },
     {
       id: 5,
-      name: "Lisa Anderson",
-      role: "Influencer",
-      company: "Lifestyle Blog",
+      name: "Suresh",
+      role: "MBA Aspirant",
       content:
-        "I've tried many platforms, but this one stands out. The support team is responsive and the features are exactly what I needed.",
-      rating: 5,
-    },
-    {
-      id: 6,
-      name: "James Wilson",
-      role: "Content Strategist",
-      company: "Creative Agency",
-      content:
-        "Outstanding platform with excellent tools for content creation and audience engagement. Worth every penny!",
+        "Mentorship and guest lectures gave me practical exposure I couldn’t get in a classroom and kickstarted my FMCG career.",
       rating: 5,
     },
   ];
-
+  
   return (
     <section className="w-full py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
       <div className="container mx-auto max-w-7xl">
@@ -92,7 +78,7 @@ export default function TestimonialsSection() {
                     {testimonial.name}
                   </p>
                   <p className="text-gray-600 text-sm md:text-base">
-                    {testimonial.role} at {testimonial.company}
+                    {testimonial.role} 
                   </p>
                 </div>
               </div>
@@ -123,7 +109,7 @@ export default function TestimonialsSection() {
                     {testimonial.name}
                   </p>
                   <p className="text-gray-600 text-sm md:text-base">
-                    {testimonial.role} at {testimonial.company}
+                    {testimonial.role} 
                   </p>
                 </div>
               </div>
@@ -154,7 +140,7 @@ export default function TestimonialsSection() {
                     {testimonial.name}
                   </p>
                   <p className="text-gray-600 text-sm md:text-base">
-                    {testimonial.role} at {testimonial.company}
+                    {testimonial.role} 
                   </p>
                 </div>
               </div>
