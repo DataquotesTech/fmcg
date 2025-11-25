@@ -28,11 +28,11 @@ export default function AdminLayout({ children }) {
         <div className="w-full">
           <div className="flex items-center justify-between h-15">
             {/* Logo */}
-            <div className="flex border-r-2 h-full items-center justify-center px-6 hover:bg-primary hover:text-secondary transition-all duration-300">
+            <div className="flex border-r-2 h-full items-center justify-center px-3 sm:px-4 md:px-6 hover:bg-primary hover:text-secondary transition-all duration-300">
               <div className="shrink-0 px-2 py-2 rounded-2xl">
                 <Link
                   href="/admin/create"
-                  className="text-xl sm:text-3xl font-bold py-10"
+                  className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold py-2 sm:py-4 md:py-6"
                 >
                   Admin Panel
                 </Link>
@@ -71,7 +71,7 @@ export default function AdminLayout({ children }) {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2.5 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+              className="md:hidden p-2.5 mr-3 sm:mr-4 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -104,17 +104,17 @@ export default function AdminLayout({ children }) {
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <nav className="md:hidden py-6 border-t-2 border-gray-200">
-              <div className="flex flex-col space-y-4">
+            <nav className="md:hidden py-4 sm:py-6 border-t-2 border-gray-200 bg-secondary">
+              <div className="flex flex-col space-y-2 sm:space-y-4 px-4 sm:px-6">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`font-semibold py-3 transition-colors text-base ${
+                    className={`font-semibold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors text-sm sm:text-base ${
                       pathname === item.href
-                        ? "text-primary bg-secondary"
-                        : "text-gray-700 hover:text-gray-900"
+                        ? "text-secondary bg-primary"
+                        : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                     }`}
                   >
                     {item.label}
@@ -123,7 +123,7 @@ export default function AdminLayout({ children }) {
                 <Link
                   href="/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-gray-700 hover:text-gray-900 font-semibold py-3 transition-colors text-base"
+                  className="text-gray-700 hover:text-gray-900 font-semibold py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors text-sm sm:text-base hover:bg-gray-100"
                 >
                   View Site
                 </Link>

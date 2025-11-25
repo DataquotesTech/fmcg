@@ -35,7 +35,8 @@ export async function generateMetadata({ params }) {
     : `Read ${blog.title} by ${blog.author} in the ${blog.category} category.`;
 
   const blogUrl = `${siteUrl}/blog/${blog.slug}`;
-  // Use blog image if available and valid URL, otherwise fallback to default logo
+  // Use the main blog image (the big featured image on top) if available and valid URL, otherwise fallback to default logo
+  // This ensures the SEO image is the main featured image, not any side images
   const imageUrl =
     blog.image &&
     (blog.image.startsWith("http://") || blog.image.startsWith("https://"))

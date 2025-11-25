@@ -141,6 +141,7 @@ export default function Footer() {
                     href="#blogs"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#blogs";
                       const element = document.getElementById("blogs");
                       if (element) {
                         requestAnimationFrame(() => {
@@ -164,6 +165,7 @@ export default function Footer() {
                     href="#services"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#services";
                       const element = document.getElementById("services");
                       if (element) {
                         requestAnimationFrame(() => {
@@ -187,6 +189,7 @@ export default function Footer() {
                     href="#network"
                     onClick={(e) => {
                       e.preventDefault();
+                      window.location.href = "/#network";
                       const element = document.getElementById("network");
                       if (element) {
                         requestAnimationFrame(() => {

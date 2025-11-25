@@ -647,15 +647,15 @@ export default function Home() {
           )}
         </div>
       </section>
-
+           {/* Services Section */}
+      <ServicesSection />
       {/* Stats/Network Section */}
       <StatsSection />
 
       {/* About Section */}
       <AboutSection />
 
-      {/* Services Section */}
-      <ServicesSection />
+     
 
       {/* Testimonials Section */}
       <TestimonialsSection />
