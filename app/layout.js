@@ -16,7 +16,7 @@ const inter = Host_Grotesk({
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://fmcginfluencer.com";
-const siteName = "FMCG Influencer";
+const siteName = "FMCGInfluencer.com";
 
 const seoKeywords = [
   "FMCG industry trends",
@@ -122,11 +122,11 @@ const seoKeywords = [
 export const metadata = {
   title: {
     default:
-      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
-    template: "%s | FMCG Influencer",
+      "FMCGInfluencer.com - India’s trusted platform for FMCG talent, brands, and business solutions.",
+    template: "%s | FMCGInfluencer.com",
   },
   description:
-    "Expert strategies and Insights for FMCG professionals, trade partners, engagements, distributors, and aspirants. Build your brand and grow your community.",
+    "India’s trusted platform for FMCG talent, brands, and business solutions.",
   keywords: [
     "FMCG",
     "Fast Moving Consumer Goods",
@@ -140,9 +140,9 @@ export const metadata = {
     "Consumer goods",
     ...seoKeywords,
   ],
-  authors: [{ name: "FMCG Influencer" }],
-  creator: "FMCG Influencer",
-  publisher: "FMCG Influencer",
+  authors: [{ name: "FMCGInfluencer.com" }],
+  creator: "FMCGInfluencer.com",
+  publisher: "FMCGInfluencer.com",
   metadataBase: new URL(siteUrl),
   icons: {
     icon: "/favicon.svg",
@@ -158,24 +158,24 @@ export const metadata = {
     url: siteUrl,
     siteName: siteName,
     title:
-      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+      "FMCGInfluencer.com - India’s trusted platform for FMCG talent, brands, and business solutions.",
     description:
-      "Expert strategies and Insights for FMCG professionals, trade partners, engagements, distributors, and aspirants.",
+      "India’s trusted platform for FMCG talent, brands, and business solutions.",
     images: [
       {
         url: `${siteUrl}/fmcg-removebg-preview.png`,
         width: 1200,
         height: 630,
-        alt: "FMCG Influencer",
+        alt: "FMCGInfluencer.com",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "FMCG Influencer - Helping Influencers Build Their Brand & Community",
+      "FMCGInfluencer.com - India’s trusted platform for FMCG talent, brands, and business solutions.",
     description:
-      "Expert strategies and Insights for FMCG professionals, trade partners, engagements, distributors, and aspirants.",
+      "India’s trusted platform for FMCG talent, brands, and business solutions.",
     images: [`${siteUrl}/fmcg-removebg-preview.png`],
   },
   robots: {

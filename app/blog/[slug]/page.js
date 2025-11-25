@@ -253,6 +253,13 @@ export default async function BlogDetail({ params }) {
     }
   };
 
+  // Generate plain text description for meta tags (same logic as metadata)
+  const plainDescription = blog.description
+    ? blog.description.replace(/<[^>]*>/g, "").substring(0, 160)
+    : `Read ${blog.title} by ${blog.author} in the ${blog.category} category.`;
+
+  const blogUrl = `${siteUrl}/blog/${blog.slug}`;
+
   const structuredData = generateBlogStructuredData(blog, siteUrl);
   const breadcrumbData = generateBreadcrumbStructuredData(
     [
@@ -264,11 +271,16 @@ export default async function BlogDetail({ params }) {
   );
 
   // Get the absolute image URL for mobile meta tags
-  const mobileImageUrl =
-    blog.image &&
-    (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
-      ? blog.image
-      : `${siteUrl}/fmcg-removebg-preview.png`;
+  let mobileImageUrl = `${siteUrl}/fmcg-removebg-preview.png`;
+  if (blog.image) {
+    if (blog.image.startsWith("http://") || blog.image.startsWith("https://")) {
+      mobileImageUrl = blog.image;
+    } else if (blog.image.startsWith("/")) {
+      mobileImageUrl = `${siteUrl}${blog.image}`;
+    } else {
+      mobileImageUrl = `${siteUrl}/${blog.image}`;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
