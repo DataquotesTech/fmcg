@@ -281,6 +281,7 @@ export default function Footer() {
           <p className="text-gray-600 text-sm md:text-base">
             © 2026 FMCGInfluencers.com All Rights Reserved.
           </p>
+          <p className="text-gray-600 text-sm md:text-base">Design and developed by <a href="https://www.dataquotes.net/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-primary/70">DataQuotes</a></p>
         </div>
       </div>
     </footer>
