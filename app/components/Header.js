@@ -211,17 +211,12 @@ export default function Header() {
                 >
                   <span>Network</span>
                 </a>
-                <a
-                  href="#about"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.href = "/#about";
-                    scrollToSection("about");
-                  }}
+                <Link
+                  href="/about"
                   className="font-semibold text-sm md:text-base lg:text-lg px-3 md:px-4 lg:px-6 hover:underline hover:text-black transition-all duration-300 h-full flex items-center justify-self-center cursor-pointer"
                 >
                   <span>About</span>
-                </a>
+                </Link>
               </div>
               <div className="flex items-center h-full bg-primary border-primary border-2">
                 <a
@@ -345,17 +340,13 @@ export default function Header() {
                   >
                     Network
                   </a>
-                  <a
-                    href="#about"
+                  <Link
+                    href="/about"
                     className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors  border-b-2 border-transparent hover:border-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = "/#about";
-                      scrollToSection("about");
-                    }}
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     About
-                  </a>
+                  </Link>
                 </nav>
 
                 {/* Register Button */}

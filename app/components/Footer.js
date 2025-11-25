@@ -129,27 +129,12 @@ export default function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href="#about"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const element = document.getElementById("about");
-                      if (element) {
-                        requestAnimationFrame(() => {
-                          const headerOffset = 80;
-                          const elementPosition = element.offsetTop;
-                          const offsetPosition = elementPosition - headerOffset;
-                          window.scrollTo({
-                            top: offsetPosition,
-                            behavior: "smooth",
-                          });
-                        });
-                      }
-                    }}
-                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors cursor-pointer"
+                  <Link
+                    href="/about"
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
                   >
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
@@ -228,20 +213,28 @@ export default function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/privacy-policy"
                     className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
                   >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/disclaimer"
                     className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
                   >
-                    Terms of Service
-                  </a>
+                    Disclaimer
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/terms-and-conditions"
+                    className="text-gray-600 hover:text-gray-900 text-base font-medium transition-colors"
+                  >
+                    Terms and Conditions
+                  </Link>
                 </li>
               </ul>
             </div>

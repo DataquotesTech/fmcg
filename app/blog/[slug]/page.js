@@ -35,6 +35,7 @@ export async function generateMetadata({ params }) {
     : `Read ${blog.title} by ${blog.author} in the ${blog.category} category.`;
 
   const blogUrl = `${siteUrl}/blog/${blog.slug}`;
+  // Use blog image if available and valid URL, otherwise fallback to default logo
   const imageUrl =
     blog.image &&
     (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
