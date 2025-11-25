@@ -23,9 +23,9 @@ export default function PrivacyPolicyPage() {
           <div className="prose prose-lg max-w-none">
             <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
               This Privacy Policy describes Our policies and procedures on the
-              collection, use and disclosure of Your information when You use the
-              Service and tells You about Your privacy rights and how the law
-              protects You.
+              collection, use and disclosure of Your information when You use
+              the Service and tells You about Your privacy rights and how the
+              law protects You.
             </p>
             <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-8">
               We use Your Personal data to provide and improve the Service. By
@@ -44,9 +44,9 @@ export default function PrivacyPolicyPage() {
               </h3>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
                 The words whose initial letters are capitalized have meanings
-                defined under the following conditions. The following definitions
-                shall have the same meaning regardless of whether they appear in
-                singular or in plural.
+                defined under the following conditions. The following
+                definitions shall have the same meaning regardless of whether
+                they appear in singular or in plural.
               </p>
 
               <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
@@ -57,8 +57,8 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-disc pl-6 space-y-2 text-base md:text-lg text-gray-700 mb-6">
                 <li>
-                  <strong>Account</strong> means a unique account created for You
-                  to access our Service or parts of our Service.
+                  <strong>Account</strong> means a unique account created for
+                  You to access our Service or parts of our Service.
                 </li>
                 <li>
                   <strong>Affiliate</strong> means an entity that controls, is
@@ -113,8 +113,8 @@ export default function PrivacyPolicyPage() {
                 </li>
                 <li>
                   <strong>You</strong> means the individual accessing or using
-                  the Service, or the company, or other legal entity on behalf of
-                  which such individual is accessing or using the Service, as
+                  the Service, or the company, or other legal entity on behalf
+                  of which such individual is accessing or using the Service, as
                   applicable.
                 </li>
               </ul>
@@ -158,9 +158,9 @@ export default function PrivacyPolicyPage() {
                 unique device identifiers and other diagnostic data.
               </p>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-                When You access the Service by or through a mobile device, We may
-                collect certain information automatically, including, but not
-                limited to, the type of mobile device You use, Your mobile
+                When You access the Service by or through a mobile device, We
+                may collect certain information automatically, including, but
+                not limited to, the type of mobile device You use, Your mobile
                 device's unique ID, the IP address of Your mobile device, Your
                 mobile operating system, the type of mobile Internet browser You
                 use, unique device identifiers and other diagnostic data.
@@ -193,8 +193,8 @@ export default function PrivacyPolicyPage() {
                 </li>
                 <li>
                   <strong>Web Beacons.</strong> Certain sections of our Service
-                  and our emails may contain small electronic files known as
-                  web beacons (also referred to as clear gifs, pixel tags, and
+                  and our emails may contain small electronic files known as web
+                  beacons (also referred to as clear gifs, pixel tags, and
                   single-pixel gifs) that permit the Company, for example, to
                   count users who have visited those pages or opened an email
                   and for other related website statistics (for example,
@@ -224,9 +224,10 @@ export default function PrivacyPolicyPage() {
                   Purpose: These Cookies are essential to provide You with
                   services available through the Website and to enable You to
                   use some of its features. They help to authenticate users and
-                  prevent fraudulent use of user accounts. Without these Cookies,
-                  the services that You have asked for cannot be provided, and
-                  We only use these Cookies to provide You with those services.
+                  prevent fraudulent use of user accounts. Without these
+                  Cookies, the services that You have asked for cannot be
+                  provided, and We only use these Cookies to provide You with
+                  those services.
                 </li>
                 <li>
                   <strong>Cookies Policy / Notice Acceptance Cookies</strong>
@@ -286,9 +287,9 @@ export default function PrivacyPolicyPage() {
                 </li>
                 <li>
                   To contact You: To contact You by email, telephone calls, SMS,
-                  or other equivalent forms of electronic communication, such
-                  as a mobile application's push notifications regarding updates
-                  or informative communications related to the functionalities,
+                  or other equivalent forms of electronic communication, such as
+                  a mobile application's push notifications regarding updates or
+                  informative communications related to the functionalities,
                   products or contracted services, including the security
                   updates, when necessary or reasonable for their
                   implementation.
@@ -307,11 +308,11 @@ export default function PrivacyPolicyPage() {
                 <li>
                   For business transfers: We may use Your information to
                   evaluate or conduct a merger, divestiture, restructuring,
-                  reorganization, dissolution, or other sale or transfer of
-                  some or all of Our assets, whether as a going concern or as
-                  part of bankruptcy, liquidation, or similar proceeding, in
-                  which Personal Data held by Us about our Service users is
-                  among the assets transferred.
+                  reorganization, dissolution, or other sale or transfer of some
+                  or all of Our assets, whether as a going concern or as part of
+                  bankruptcy, liquidation, or similar proceeding, in which
+                  Personal Data held by Us about our Service users is among the
+                  assets transferred.
                 </li>
                 <li>
                   For other purposes: We may use Your information for other
@@ -340,11 +341,11 @@ export default function PrivacyPolicyPage() {
                 </li>
                 <li>
                   <strong>With Affiliates:</strong> We may share Your
-                  information with Our affiliates, in which case we will
-                  require those affiliates to honor this Privacy Policy.
-                  Affiliates include Our parent company and any other
-                  subsidiaries, joint venture partners or other companies that We
-                  control or that are under common control with Us.
+                  information with Our affiliates, in which case we will require
+                  those affiliates to honor this Privacy Policy. Affiliates
+                  include Our parent company and any other subsidiaries, joint
+                  venture partners or other companies that We control or that
+                  are under common control with Us.
                 </li>
                 <li>
                   <strong>With business partners:</strong> We may share Your
@@ -425,8 +426,8 @@ export default function PrivacyPolicyPage() {
                 information about You from within the Service.
               </p>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
-                You may update, amend, or delete Your information at any time
-                by signing in to Your Account, if you have one, and visiting the
+                You may update, amend, or delete Your information at any time by
+                signing in to Your Account, if you have one, and visiting the
                 account settings section that allows you to manage Your personal
                 information. You may also contact Us to request access to,
                 correct, or delete any personal information that You have
@@ -472,7 +473,9 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-disc pl-6 space-y-2 text-base md:text-lg text-gray-700 mb-6">
                 <li>Comply with a legal obligation</li>
-                <li>Protect and defend the rights or property of the Company</li>
+                <li>
+                  Protect and defend the rights or property of the Company
+                </li>
                 <li>
                   Prevent or investigate possible wrongdoing in connection with
                   the Service
@@ -583,4 +586,3 @@ export default function PrivacyPolicyPage() {
     </div>
   );
 }
-

@@ -37,11 +37,17 @@ export async function generateMetadata({ params }) {
   const blogUrl = `${siteUrl}/blog/${blog.slug}`;
   // Use the main blog image (the big featured image on top) if available and valid URL, otherwise fallback to default logo
   // This ensures the SEO image is the main featured image, not any side images
+  // Always use absolute URL for proper social media card display
   const imageUrl =
     blog.image &&
     (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
       ? blog.image
       : `${siteUrl}/fmcg-removebg-preview.png`;
+
+  // Ensure image URL is always absolute
+  const absoluteImageUrl = imageUrl.startsWith("http")
+    ? imageUrl
+    : `${siteUrl}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
 
   return {
     title: blog.title,
@@ -54,29 +60,37 @@ export async function generateMetadata({ params }) {
       blog.title,
     ],
     authors: [{ name: blog.author }],
+    // Open Graph metadata - image appears on top in social cards
     openGraph: {
       type: "article",
       url: blogUrl,
+      siteName: "FMCG Influencers",
+      locale: "en_US",
+      // Image must be first to ensure it appears on top in social cards
+      images: [
+        {
+          url: absoluteImageUrl,
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+          type: "image/jpeg",
+        },
+      ],
       title: blog.title,
       description: plainDescription,
       publishedTime: blog.createdAt,
       authors: [blog.author],
       section: blog.category,
       tags: [blog.category, blog.type],
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: blog.title,
-        },
-      ],
     },
+    // Twitter Card - summary_large_image shows image on top, then content
     twitter: {
       card: "summary_large_image",
       title: blog.title,
       description: plainDescription,
-      images: [imageUrl],
+      // Image appears on top in Twitter cards
+      images: [absoluteImageUrl],
+      creator: blog.author,
     },
     alternates: {
       canonical: blogUrl,

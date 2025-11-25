@@ -16,7 +16,7 @@ export default function AboutPage() {
           {/* Hero Section */}
           <div className="mb-12 md:mb-16">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              About FMCG Influencers
+              About FMCGInfluencers.com
             </h1>
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
               Connecting India&apos;s FMCG talent, knowledge, and influence
