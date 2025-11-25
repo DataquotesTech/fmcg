@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import { getBlogBySlug } from "../../data/mockData";
 import BlogImage from "./BlogImage";
 import BlogContent from "./BlogContent";
+import MobileMetaTags from "./MobileMetaTags";
 import StructuredData, {
   generateBlogStructuredData,
   generateBreadcrumbStructuredData,
@@ -37,14 +38,24 @@ export async function generateMetadata({ params }) {
   const blogUrl = `${siteUrl}/blog/${blog.slug}`;
   // Use the main blog image (the big featured image on top) if available and valid URL, otherwise fallback to default logo
   // This ensures the SEO image is the main featured image, not any side images
-  // Always use absolute URL for proper social media card display
-  const imageUrl =
-    blog.image &&
-    (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
-      ? blog.image
-      : `${siteUrl}/fmcg-removebg-preview.png`;
+  // Always use absolute URL for proper social media card display, especially for mobile sharing
+  let imageUrl = `${siteUrl}/fmcg-removebg-preview.png`; // Default fallback
 
-  // Ensure image URL is always absolute
+  if (blog.image) {
+    if (blog.image.startsWith("http://") || blog.image.startsWith("https://")) {
+      // Already absolute URL from Supabase or external source
+      imageUrl = blog.image;
+    } else if (blog.image.startsWith("/")) {
+      // Relative path, make it absolute
+      imageUrl = `${siteUrl}${blog.image}`;
+    } else {
+      // No leading slash, add it
+      imageUrl = `${siteUrl}/${blog.image}`;
+    }
+  }
+
+  // Ensure image URL is always absolute and properly formatted for mobile sharing
+  // Mobile apps (WhatsApp, native sharing) require absolute URLs
   const absoluteImageUrl = imageUrl.startsWith("http")
     ? imageUrl
     : `${siteUrl}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
@@ -61,19 +72,28 @@ export async function generateMetadata({ params }) {
     ],
     authors: [{ name: blog.author }],
     // Open Graph metadata - image appears on top in social cards
+    // Mobile sharing apps require these specific formats
     openGraph: {
       type: "article",
       url: blogUrl,
       siteName: "FMCG Influencers",
       locale: "en_US",
       // Image must be first to ensure it appears on top in social cards
+      // Mobile apps are strict about image requirements
       images: [
         {
           url: absoluteImageUrl,
           width: 1200,
           height: 630,
           alt: blog.title,
-          type: "image/jpeg",
+          // Detect image type from URL extension for better mobile compatibility
+          type: absoluteImageUrl.match(/\.(jpg|jpeg)$/i)
+            ? "image/jpeg"
+            : absoluteImageUrl.match(/\.png$/i)
+            ? "image/png"
+            : absoluteImageUrl.match(/\.webp$/i)
+            ? "image/webp"
+            : "image/jpeg", // Default to jpeg
         },
       ],
       title: blog.title,
@@ -89,7 +109,13 @@ export async function generateMetadata({ params }) {
       title: blog.title,
       description: plainDescription,
       // Image appears on top in Twitter cards
-      images: [absoluteImageUrl],
+      // Mobile sharing requires absolute URL
+      images: [
+        {
+          url: absoluteImageUrl,
+          alt: blog.title,
+        },
+      ],
       creator: blog.author,
     },
     alternates: {
@@ -237,8 +263,21 @@ export default async function BlogDetail({ params }) {
     siteUrl
   );
 
+  // Get the absolute image URL for mobile meta tags
+  const mobileImageUrl =
+    blog.image &&
+    (blog.image.startsWith("http://") || blog.image.startsWith("https://"))
+      ? blog.image
+      : `${siteUrl}/fmcg-removebg-preview.png`;
+
   return (
     <div className="min-h-screen bg-white">
+      <MobileMetaTags
+        imageUrl={mobileImageUrl}
+        title={blog.title}
+        description={plainDescription}
+        url={blogUrl}
+      />
       <StructuredData data={structuredData} />
       <StructuredData data={breadcrumbData} />
       <Header />
