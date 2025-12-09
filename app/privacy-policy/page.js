@@ -21,6 +21,37 @@ export default function PrivacyPolicyPage() {
           </p>
 
           <div className="prose prose-lg max-w-none">
+            <section className="mb-8 md:mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                Ezoic Privacy & Cookie Disclosures
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                We partner with Ezoic to deliver advertising and related
+                services. Ezoic and its partners may collect and use data as
+                described in the disclosures maintained by Ezoic.
+              </p>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                You can review the full Ezoic privacy and cookie disclosures for
+                this site at{" "}
+                <a
+                  href="http://g.ezoic.net/privacy/fmcginfluencers.com"
+                  className="text-primary hover:underline"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  http://g.ezoic.net/privacy/fmcginfluencers.com
+                </a>
+                .
+              </p>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
+                The dynamically generated disclosure from Ezoic is embedded
+                below:
+              </p>
+              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <span id="ezoic-privacy-policy-embed"></span>
+              </div>
+            </section>
+
             <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
               This Privacy Policy describes Our policies and procedures on the
               collection, use and disclosure of Your information when You use
