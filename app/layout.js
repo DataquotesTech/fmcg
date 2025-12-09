@@ -1,4 +1,5 @@
 import { Playfair_Display, Host_Grotesk } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import WhatsAppButton from "./components/WhatsAppButton";
 
@@ -208,18 +209,13 @@ export default function RootLayout({ children }) {
           data-cfasync="false"
           suppressHydrationWarning
         />
-        {/* Ezoic Script */}
-        <script
-          src="//www.ezojs.com/ezoic/sa.min.js"
-          async
-          suppressHydrationWarning
-        />
+        {/* Ezoic Script - Initialize before loading */}
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               window.ezstandalone = window.ezstandalone || {};
-              ezstandalone.cmd = ezstandalone.cmd || [];
+              window.ezstandalone.cmd = window.ezstandalone.cmd || [];
             `,
           }}
         />
@@ -227,6 +223,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${playfairDisplay.variable} ${inter.variable} font-sans relative`}
       >
+        {/* Ezoic Script - Load after page becomes interactive */}
+        <Script
+          src="//www.ezojs.com/ezoic/sa.min.js"
+          strategy="afterInteractive"
+        />
         {children}
         <WhatsAppButton />
       </body>
