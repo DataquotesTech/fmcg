@@ -1,5 +1,6 @@
 // Server Component - uses CSS module instead of styled-jsx
 import styles from "./blog-content.module.css";
+import { optimizeHtmlImages } from "../../utils/optimizeHtmlImages";
 
 const inlineAdMarkup = `
   <div class="w-full my-12 md:my-16 bg-gray-100 rounded-xl p-6 md:p-8 relative min-h-[220px] flex items-center justify-center shadow-sm">
@@ -38,7 +39,9 @@ function injectInlineAd(html) {
 }
 
 export default function BlogContent({ content }) {
-  const contentWithAd = injectInlineAd(content);
+  // Optimize images in HTML content
+  const optimizedContent = optimizeHtmlImages(content);
+  const contentWithAd = injectInlineAd(optimizedContent);
 
   return (
     <div className="prose prose-lg md:prose-xl max-w-none mb-12 md:mb-16">

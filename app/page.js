@@ -22,6 +22,8 @@ import {
 } from "./data/mockData";
 import Link from "next/link";
 import { slugify } from "./utils/slugify";
+import BlogLoading from "./components/BlogLoading";
+import OptimizedImage from "./components/OptimizedImage";
 
 export default function Home() {
   const [blogs, setBlogs] = useState([]);
@@ -137,34 +139,20 @@ export default function Home() {
   };
 
   const getImagePlaceholder = (imageType, index) => {
-    // Check if imageType is a URL (starts with http:// or https://)
+    // Check if imageType is a URL (starts with http:// or https://) or relative path
     if (
       imageType &&
-      (imageType.startsWith("http://") || imageType.startsWith("https://"))
+      (imageType.startsWith("http://") ||
+        imageType.startsWith("https://") ||
+        imageType.startsWith("/"))
     ) {
       return (
-        <img
+        <OptimizedImage
           key={`img-${index}`}
           src={imageType}
           alt="Blog image"
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            // Hide broken image and show placeholder
-            e.target.style.display = "none";
-            const parent = e.target.parentElement;
-            if (parent) {
-              const placeholder = document.createElement("div");
-              placeholder.className =
-                "w-full h-full bg-orange-50 flex items-center justify-center relative overflow-hidden";
-              placeholder.innerHTML = `
-                <div class="absolute inset-0 bg-linear-to-br from-orange-100 to-orange-200"></div>
-                <svg class="w-20 h-20 text-orange-300 relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z" />
-                </svg>
-              `;
-              parent.appendChild(placeholder);
-            }
-          }}
+          className="w-full h-full"
+          priority={index < 2} // Prioritize first 2 images
         />
       );
     }
@@ -345,197 +333,212 @@ export default function Home() {
           onCategoryChange={handleCategoryChange}
         />
         <div className="container mx-auto max-w-7xl">
-          {/* Featured & Trending Section - Side by Side if both exist */}
-          {(featuredBlog || trendingBlog) && (
-            <div className="mb-20 md:mb-24 lg:mb-32">
-              {featuredBlog && trendingBlog ? (
-                // Both exist - Show side by side as cards (Trending on left)
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16">
-                  {/* Trending Blog Card - Left Side */}
-                  <Link
-                    href={getBlogHref(trendingBlog)}
-                    className="bg-white rounded overflow-hidden border-2 border-primary transition-all duration-300 cursor-pointer group relative "
-                  >
-                    {/* Northeast Arrow - Top Right */}
-                    <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="text-gray-400 group-hover:text-secondary transition-colors"
+          {loading ? (
+            <BlogLoading />
+          ) : (
+            <>
+              {/* Featured & Trending Section - Side by Side if both exist */}
+              {(featuredBlog || trendingBlog) && (
+                <div className="mb-20 md:mb-24 lg:mb-32">
+                  {featuredBlog && trendingBlog ? (
+                    // Both exist - Show side by side as cards (Trending on left)
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16">
+                      {/* Trending Blog Card - Left Side */}
+                      <Link
+                        href={getBlogHref(trendingBlog)}
+                        className="bg-white rounded overflow-hidden border-2 border-primary transition-all duration-300 cursor-pointer group relative "
                       >
-                        <path
-                          d="M5 19L19 5M19 5H13M19 5V11"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <div className="relative">
-                      <div className="absolute top-5 left-5 z-10">
-                        <span className="inline-block bg-blue-100 text-blue-400 text-xs font-bold px-4 py-2 rounded  tracking-wide uppercase border">
-                          Trending
-                        </span>
-                      </div>
-                      <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
-                        {getImagePlaceholder(
-                          trendingBlog.image,
-                          trendingBlog.id
-                        )}
-                      </div>
-                    </div>
-                    <div className="p-8 md:p-10">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
-                        {trendingBlog.title}
-                      </h2>
-                      <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                        {trendingBlog.description}
-                      </p>
-                    </div>
-                  </Link>
+                        {/* Northeast Arrow - Top Right */}
+                        <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="text-gray-400 group-hover:text-secondary transition-colors"
+                          >
+                            <path
+                              d="M5 19L19 5M19 5H13M19 5V11"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute top-5 left-5 z-10">
+                            <span className="inline-block bg-blue-100 text-blue-400 text-xs font-bold px-4 py-2 rounded  tracking-wide uppercase border">
+                              Trending
+                            </span>
+                          </div>
+                          <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
+                            {getImagePlaceholder(
+                              trendingBlog.image,
+                              trendingBlog.id
+                            )}
+                          </div>
+                        </div>
+                        <div className="p-8 md:p-10">
+                          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
+                            {trendingBlog.title}
+                          </h2>
+                          <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                            {trendingBlog.description}
+                          </p>
+                        </div>
+                      </Link>
 
-                  {/* Featured Blog Card - Right Side */}
-                  <Link
-                    href={getBlogHref(featuredBlog)}
-                    className="bg-white rounded overflow-hidden border-2 border-primary  transition-all duration-300 cursor-pointer group relative"
-                  >
-                    {/* Northeast Arrow - Top Right */}
-                    <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="text-gray-400 group-hover:text-secondary transition-colors"
+                      {/* Featured Blog Card - Right Side */}
+                      <Link
+                        href={getBlogHref(featuredBlog)}
+                        className="bg-white rounded overflow-hidden border-2 border-primary  transition-all duration-300 cursor-pointer group relative"
                       >
-                        <path
-                          d="M5 19L19 5M19 5H13M19 5V11"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                        {/* Northeast Arrow - Top Right */}
+                        <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="text-gray-400 group-hover:text-secondary transition-colors"
+                          >
+                            <path
+                              d="M5 19L19 5M19 5H13M19 5V11"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute top-5 left-5 z-10">
+                            <span className="inline-block bg-orange-100 text-orange-400 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase border">
+                              Featured
+                            </span>
+                          </div>
+                          <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
+                            {getImagePlaceholder(
+                              featuredBlog.image,
+                              featuredBlog.id
+                            )}
+                          </div>
+                        </div>
+                        <div className="p-8 md:p-10">
+                          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
+                            {featuredBlog.title}
+                          </h2>
+                          <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                            {featuredBlog.description}
+                          </p>
+                        </div>
+                      </Link>
                     </div>
-                    <div className="relative">
-                      <div className="absolute top-5 left-5 z-10">
-                        <span className="inline-block bg-orange-100 text-orange-400 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase border">
-                          Featured
-                        </span>
+                  ) : featuredBlog ? (
+                    // Only Featured - Full Width
+                    <Link
+                      href={getBlogHref(featuredBlog)}
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
+                    >
+                      {/* Northeast Arrow - Top Right */}
+                      <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="text-gray-400 group-hover:text-gray-200 transition-colors"
+                        >
+                          <path
+                            d="M5 19L19 5M19 5H13M19 5V11"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
                       </div>
-                      <div className="w-full h-64 md:h-80 lg:h-80 group-hover:scale-102 transition-transform duration-500 ">
+                      {/* Left Side - Text Content */}
+                      <div className="space-y-6 md:space-y-8 px-2 md:px-4 flex flex-col justify-between items-start ">
+                        <div>
+                          <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
+                            Featured
+                          </span>
+                        </div>
+                        <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
+                          {featuredBlog.title}
+                        </h2>
+                        <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
+                          {featuredBlog.description}
+                        </p>
+                      </div>
+
+                      {/* Right Side - Image */}
+                      <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-r overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
                         {getImagePlaceholder(
                           featuredBlog.image,
                           featuredBlog.id
                         )}
                       </div>
-                    </div>
-                    <div className="p-8 md:p-10">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 transition-colors leading-tight">
-                        {featuredBlog.title}
-                      </h2>
-                      <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                        {featuredBlog.description}
-                      </p>
-                    </div>
-                  </Link>
+                    </Link>
+                  ) : (
+                    // Only Trending - Full Width
+                    <Link
+                      href={getBlogHref(trendingBlog)}
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
+                    >
+                      {/* Northeast Arrow - Top Right */}
+                      <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="text-gray-400 group-hover:text-gray-200 transition-colors"
+                        >
+                          <path
+                            d="M5 19L19 5M19 5H13M19 5V11"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      {/* Left Side - Image */}
+                      <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-l overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
+                        {getImagePlaceholder(
+                          trendingBlog.image,
+                          trendingBlog.id
+                        )}
+                      </div>
+
+                      {/* Right Side - Text Content */}
+                      <div className="space-y-6 md:space-y-8 px-2 md:px-4 flex flex-col justify-between items-start ">
+                        <div>
+                          <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
+                            Trending
+                          </span>
+                        </div>
+
+                        <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
+                          {trendingBlog.title}
+                        </h2>
+                        <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
+                          {trendingBlog.description}
+                        </p>
+                      </div>
+                    </Link>
+                  )}
                 </div>
-              ) : featuredBlog ? (
-                // Only Featured - Full Width
-                <Link
-                  href={getBlogHref(featuredBlog)}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
-                >
-                  {/* Northeast Arrow - Top Right */}
-                  <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="text-gray-400 group-hover:text-gray-200 transition-colors"
-                    >
-                      <path
-                        d="M5 19L19 5M19 5H13M19 5V11"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  {/* Left Side - Text Content */}
-                  <div className="space-y-6 md:space-y-8 ">
-                    <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
-                      Featured
-                    </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
-                      {featuredBlog.title}
-                    </h2>
-                    <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
-                      {featuredBlog.description}
-                    </p>
-                  </div>
-
-                  {/* Right Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-r overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
-                    {getImagePlaceholder(featuredBlog.image, featuredBlog.id)}
-                  </div>
-                </Link>
-              ) : (
-                // Only Trending - Full Width
-                <Link
-                  href={getBlogHref(trendingBlog)}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center group relative border-2 border-primary rounded-lg overflow-hidden bg-white"
-                >
-                  {/* Northeast Arrow - Top Right */}
-                  <div className="absolute top-4 right-4 z-20 bg-primary p-3 rounded-full">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="text-gray-400 group-hover:text-gray-200 transition-colors"
-                    >
-                      <path
-                        d="M5 19L19 5M19 5H13M19 5V11"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  {/* Left Side - Image */}
-                  <div className="w-full h-80 md:h-96 lg:h-[500px] rounded-l overflow-hidden group-hover:scale-102 transition-transform duration-500 ">
-                    {getImagePlaceholder(trendingBlog.image, trendingBlog.id)}
-                  </div>
-
-                  {/* Right Side - Text Content */}
-                  <div className="space-y-6 md:space-y-8">
-                    <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded tracking-wide uppercase">
-                      Trending
-                    </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl  font-bold text-gray-900 leading-tight  transition-colors">
-                      {trendingBlog.title}
-                    </h2>
-                    <p className="text-gray-600 text-lg md:text-xl lg:text-xl leading-relaxed">
-                      {trendingBlog.description}
-                    </p>
-                  </div>
-                </Link>
               )}
-            </div>
-          )}
 
-          {/* Section Title
+              {/* Section Title
           {filteredBlogs.length > 0 && (
             <div className="mb-12 md:mb-16 text-center">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
@@ -544,118 +547,120 @@ export default function Home() {
             </div>
           )} */}
 
-          {/* General Blog Posts Grid */}
-          {filteredBlogs.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
-                {paginatedBlogs.map((blog, index) => (
-                  <Link key={blog.id} href={getBlogHref(blog)}>
-                    <BlogCard
-                      image={getImagePlaceholder(
-                        blog.image,
-                        startIndex + index
-                      )}
-                      title={blog.title}
-                      description={blog.description}
-                    />
-                  </Link>
-                ))}
-              </div>
+              {/* General Blog Posts Grid */}
+              {loading ? (
+                <BlogLoading />
+              ) : filteredBlogs.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+                    {paginatedBlogs.map((blog, index) => (
+                      <Link key={blog.id} href={getBlogHref(blog)}>
+                        <BlogCard
+                          image={getImagePlaceholder(
+                            blog.image,
+                            startIndex + index
+                          )}
+                          title={blog.title}
+                          description={blog.description}
+                        />
+                      </Link>
+                    ))}
+                  </div>
 
-              {/* Pagination - Only show if more blogs than per page limit */}
-              {filteredBlogs.length > blogsPerPage && (
-                <div className="flex justify-center items-center gap-2 md:gap-3 mt-20 md:mt-24 lg:mt-28 flex-wrap">
-                  {/* Previous Button */}
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
-                      currentPage === 1
-                        ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
-                    }`}
-                  >
-                    prev
-                  </button>
-
-                  {/* Page Numbers */}
-                  {getPageNumbers().map((page, index) => {
-                    if (page === "ellipsis") {
-                      return (
-                        <span
-                          key={`ellipsis-${index}`}
-                          className="px-3 md:px-4 text-gray-400 text-base"
-                        >
-                          ...
-                        </span>
-                      );
-                    }
-                    return (
+                  {/* Pagination - Only show if more blogs than per page limit */}
+                  {filteredBlogs.length > blogsPerPage && (
+                    <div className="flex justify-center items-center gap-2 md:gap-3 mt-20 md:mt-24 lg:mt-28 flex-wrap">
+                      {/* Previous Button */}
                       <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`px-6 md:px-7 py-2.5 md:py-3 text-base font-semibold rounded transition-all ${
-                          currentPage === page
-                            ? "bg-primary text-secondary "
-                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
+                          currentPage === 1
+                            ? "text-gray-400 cursor-not-allowed bg-gray-50"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
                         }`}
                       >
-                        {page}
+                        prev
                       </button>
-                    );
-                  })}
 
-                  {/* Next Button */}
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
-                      currentPage === totalPages
-                        ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
-                    }`}
-                  >
-                    next
-                  </button>
+                      {/* Page Numbers */}
+                      {getPageNumbers().map((page, index) => {
+                        if (page === "ellipsis") {
+                          return (
+                            <span
+                              key={`ellipsis-${index}`}
+                              className="px-3 md:px-4 text-gray-400 text-base"
+                            >
+                              ...
+                            </span>
+                          );
+                        }
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-6 md:px-7 py-2.5 md:py-3 text-base font-semibold rounded transition-all ${
+                              currentPage === page
+                                ? "bg-primary text-secondary "
+                                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+
+                      {/* Next Button */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-5 md:px-6 py-2.5 md:py-3 text-base font-medium transition-colors rounded ${
+                          currentPage === totalPages
+                            ? "text-gray-400 cursor-not-allowed bg-gray-50"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50"
+                        }`}
+                      >
+                        next
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-20 md:py-24">
+                  <div className="max-w-md mx-auto bg-gray-50 rounded-2xl p-12 md:p-16 border-2 border-dashed border-gray-200">
+                    <svg
+                      className="w-20 h-20 mx-auto text-gray-300 mb-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <p className="text-gray-500 text-xl md:text-2xl font-medium mb-3">
+                      No blogs available in this category.
+                    </p>
+                    <p className="text-gray-400 text-base">
+                      Check back later or try another category.
+                    </p>
+                  </div>
                 </div>
               )}
             </>
-          ) : (
-            <div className="text-center py-20 md:py-24">
-              <div className="max-w-md mx-auto bg-gray-50 rounded-2xl p-12 md:p-16 border-2 border-dashed border-gray-200">
-                <svg
-                  className="w-20 h-20 mx-auto text-gray-300 mb-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <p className="text-gray-500 text-xl md:text-2xl font-medium mb-3">
-                  No blogs available in this category.
-                </p>
-                <p className="text-gray-400 text-base">
-                  Check back later or try another category.
-                </p>
-              </div>
-            </div>
           )}
         </div>
       </section>
-           {/* Services Section */}
+      {/* Services Section */}
       <ServicesSection />
       {/* Stats/Network Section */}
       <StatsSection />
 
       {/* About Section */}
       <AboutSection />
-
-     
 
       {/* Testimonials Section */}
       <TestimonialsSection />

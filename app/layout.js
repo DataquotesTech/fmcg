@@ -194,6 +194,36 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head suppressHydrationWarning>
+        {/* Gatekeeper Consent Management Scripts */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script
+          src="https://cmp.gatekeeperconsent.com/min.js"
+          data-cfasync="false"
+          suppressHydrationWarning
+        />
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script
+          src="https://the.gatekeeperconsent.com/cmp.min.js"
+          data-cfasync="false"
+          suppressHydrationWarning
+        />
+        {/* Ezoic Script */}
+        <script
+          src="//www.ezojs.com/ezoic/sa.min.js"
+          async
+          suppressHydrationWarning
+        />
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.ezstandalone = window.ezstandalone || {};
+              ezstandalone.cmd = ezstandalone.cmd || [];
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${playfairDisplay.variable} ${inter.variable} font-sans relative`}
       >

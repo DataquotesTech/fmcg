@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 
-// Client component for handling image errors with Next.js Image optimization
-export default function BlogImage({ src, alt, width = 1200, height = 630 }) {
+// Optimized Image component for blog cards and listings
+export default function OptimizedImage({ src, alt, className = "", priority = false }) {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -13,7 +13,7 @@ export default function BlogImage({ src, alt, width = 1200, height = 630 }) {
 
   if (!isValidUrl || hasError) {
     return (
-      <div className="w-full h-full bg-orange-50 flex items-center justify-center relative overflow-hidden">
+      <div className={`w-full h-full bg-orange-50 flex items-center justify-center relative overflow-hidden ${className}`}>
         <div className="absolute inset-0 bg-linear-to-br from-orange-100 to-orange-200"></div>
         <svg
           className="w-20 h-20 text-orange-300 relative z-10"
@@ -30,10 +30,10 @@ export default function BlogImage({ src, alt, width = 1200, height = 630 }) {
   const isExternal = src.startsWith("http://") || src.startsWith("https://");
 
   return (
-    <div className="w-full h-full relative">
+    <div className={`relative ${className}`}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
+          <div className="w-8 h-8 border-4 border-gray-300 border-t-primary rounded-full animate-spin"></div>
         </div>
       )}
       <Image
@@ -41,9 +41,9 @@ export default function BlogImage({ src, alt, width = 1200, height = 630 }) {
         alt={alt || "Blog image"}
         fill
         className={`object-cover ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         quality={85}
-        priority={false}
+        priority={priority}
         onError={() => {
           setHasError(true);
           setIsLoading(false);
@@ -54,3 +54,4 @@ export default function BlogImage({ src, alt, width = 1200, height = 630 }) {
     </div>
   );
 }
+

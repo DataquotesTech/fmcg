@@ -142,10 +142,12 @@ export default async function BlogDetail({ params }) {
   }
 
   const getImagePlaceholder = (imageType, index) => {
-    // Check if imageType is a URL (starts with http:// or https://)
+    // Check if imageType is a URL (starts with http:// or https://) or relative path
     if (
       imageType &&
-      (imageType.startsWith("http://") || imageType.startsWith("https://"))
+      (imageType.startsWith("http://") || 
+       imageType.startsWith("https://") || 
+       imageType.startsWith("/"))
     ) {
       return <BlogImage src={imageType} alt={blog?.title || "Blog image"} />;
     }

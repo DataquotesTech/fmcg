@@ -95,6 +95,15 @@
   height: auto;
   margin: 2rem 0;
   border-radius: 0.75rem;
+  display: block;
+  /* Optimize image rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  /* Ensure images are responsive */
+  object-fit: contain;
+  /* Add smooth loading transition */
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .blogContent strong {
