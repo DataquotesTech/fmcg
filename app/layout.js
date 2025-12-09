@@ -197,6 +197,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head suppressHydrationWarning>
+        <meta
+          name="ezoic-site-verification"
+          content="7gFdDNM4Z5oC7PO7ZuvTJ105Upla5b"
+        />
         {/* Gatekeeper Consent Management Scripts */}
         <Script
           src="https://cmp.gatekeeperconsent.com/min.js"
