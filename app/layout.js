@@ -2,7 +2,6 @@ import { Playfair_Display, Host_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import WhatsAppButton from "./components/WhatsAppButton";
-import LenisProvider from "./components/LenisProvider";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-serif",
@@ -232,10 +231,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${playfairDisplay.variable} ${inter.variable} font-sans relative`}
       >
-        <LenisProvider>
-          {children}
-          <WhatsAppButton />
-        </LenisProvider>
+        {children}
+        <WhatsAppButton />
       </body>
     </html>
   );

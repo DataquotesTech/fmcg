@@ -148,7 +148,7 @@ export default function ServicesSection() {
               key={service.id}
               className="bg-white rounded-lg p-6 sm:p-8 md:p-10 transition-all duration-300 border border-gray-200 hover:border-primary group"
             >
-              <div className="text-primary mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-primary mb-4 sm:mb-6  transition-transform duration-300">
                 <div className="w-10 h-10 sm:w-12 sm:h-12">
                   {service.icon}
                 </div>
