@@ -10,6 +10,7 @@ import StructuredData, {
   generateBlogStructuredData,
   generateBreadcrumbStructuredData,
 } from "../../components/StructuredData";
+import AdPlacement from "../../components/ads/AdPlacement";
 
 // Enable ISR (Incremental Static Regeneration) - revalidate every 60 seconds
 export const revalidate = 60;
@@ -145,9 +146,9 @@ export default async function BlogDetail({ params }) {
     // Check if imageType is a URL (starts with http:// or https://) or relative path
     if (
       imageType &&
-      (imageType.startsWith("http://") || 
-       imageType.startsWith("https://") || 
-       imageType.startsWith("/"))
+      (imageType.startsWith("http://") ||
+        imageType.startsWith("https://") ||
+        imageType.startsWith("/"))
     ) {
       return <BlogImage src={imageType} alt={blog?.title || "Blog image"} />;
     }
@@ -320,6 +321,9 @@ export default async function BlogDetail({ params }) {
 
             {/* Blog Header */}
             <div className="mb-10 md:mb-12">
+              <div className="mb-6">
+                <AdPlacement id={101} />
+              </div>
               <div className="flex flex-wrap gap-3 mb-6">
                 {blog.featured && (
                   <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-4 py-2 rounded-full tracking-wide uppercase">
@@ -392,6 +396,9 @@ export default async function BlogDetail({ params }) {
               <h3 className="text-secondary text-xs sm:text-sm font-bold">
                 Advertisement
               </h3>
+            </div>
+            <div className="pt-6">
+              <AdPlacement id={102} />
             </div>
           </div>
         </div>

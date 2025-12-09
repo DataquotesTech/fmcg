@@ -2,6 +2,7 @@ import { Playfair_Display, Host_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import WhatsAppButton from "./components/WhatsAppButton";
+import LenisProvider from "./components/LenisProvider";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-serif",
@@ -197,21 +198,20 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head suppressHydrationWarning>
         {/* Gatekeeper Consent Management Scripts */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
+        <Script
           src="https://cmp.gatekeeperconsent.com/min.js"
           data-cfasync="false"
-          suppressHydrationWarning
+          strategy="beforeInteractive"
         />
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
+        <Script
           src="https://the.gatekeeperconsent.com/cmp.min.js"
           data-cfasync="false"
-          suppressHydrationWarning
+          strategy="beforeInteractive"
         />
         {/* Ezoic Script - Initialize before loading */}
-        <script
-          suppressHydrationWarning
+        <Script
+          id="ezoic-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.ezstandalone = window.ezstandalone || {};
@@ -219,17 +219,19 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        <Script
+          src="//www.ezojs.com/ezoic/sa.min.js"
+          strategy="beforeInteractive"
+          async
+        />
       </head>
       <body
         className={`${playfairDisplay.variable} ${inter.variable} font-sans relative`}
       >
-        {/* Ezoic Script - Load after page becomes interactive */}
-        <Script
-          src="//www.ezojs.com/ezoic/sa.min.js"
-          strategy="afterInteractive"
-        />
-        {children}
-        <WhatsAppButton />
+        <LenisProvider>
+          {children}
+          <WhatsAppButton />
+        </LenisProvider>
       </body>
     </html>
   );
