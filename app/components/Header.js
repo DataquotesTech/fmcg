@@ -148,7 +148,7 @@ export default function Header() {
           <div className="flex items-center justify-between h-15">
             {/* Logo */}
             <div className="flex h-full items-center justify-center px-3 sm:px-4 md:px-6 hover:text-secondary transition-all duration-300">
-              <div className="shrink-0 px-1 sm:px-2 py-1 sm:py-2 rounded-2xl flex items-center justify-center">
+              <div className="shrink-0 px-1 sm:px-2 py-1 sm:py-2 rounded-2xl flex items-end justify-center">
                 <Link href="/" className="text-xl sm:text-3xl font-bold">
                   <Image
                     width={300}
@@ -159,7 +159,7 @@ export default function Header() {
                   />
                   
                 </Link>
-                <h1 className="text-xl sm:text-3xl font-bold text-black">FMCG Influencers</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight">FMCG Influencers</h1>
               </div>
             </div>
 
