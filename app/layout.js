@@ -1,9 +1,9 @@
-import { Playfair_Display, Host_Grotesk } from "next/font/google";
+import { Instrument_Serif, Host_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import WhatsAppButton from "./components/WhatsAppButton";
 
-const playfairDisplay = Playfair_Display({
+const playfairDisplay = Instrument_Serif({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
