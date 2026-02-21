@@ -28,7 +28,7 @@ export default function AdminLogin() {
 
       if (authError) {
         // Fallback to hardcoded credentials for backward compatibility
-        if (email === "FMCG@gmail.com" && password === "123456") {
+        if (email === "Admin@fmcgin.com" && password === "Fmcgin@2000") {
           if (typeof window !== "undefined") {
             sessionStorage.setItem("isAuthenticated", "true");
             sessionStorage.setItem("adminEmail", email);
@@ -51,7 +51,7 @@ export default function AdminLogin() {
 
       if (adminError || !adminUser) {
         // If not in admin_users table, still allow if using hardcoded credentials
-        if (email === "FMCG@gmail.com" && password === "123456") {
+        if (email === "Admin@fmcgin.com" && password === "Fmcgin@2000") {
           if (typeof window !== "undefined") {
             sessionStorage.setItem("isAuthenticated", "true");
             sessionStorage.setItem("adminEmail", email);
@@ -78,7 +78,7 @@ export default function AdminLogin() {
     } catch (err) {
       console.error("Login error:", err);
       // Fallback to hardcoded credentials
-      if (email === "FMCG@gmail.com" && password === "123456") {
+      if (email === "Admin@fmcgin.com" && password === "Fmcgin@2000") {
         if (typeof window !== "undefined") {
           sessionStorage.setItem("isAuthenticated", "true");
           sessionStorage.setItem("adminEmail", email);

@@ -153,10 +153,11 @@ export default function Header() {
                   <Image
                     width={300}
                     height={200}
-                    src="/fmcg-removebg-preview.png"
+                    src="/fmcglogo.png"
                     alt="FMCG Logo"
                     className="w-16 sm:w-19 md:w-22 lg:w-24 h-auto pt-1 sm:pt-2"
                   />
+                  <span className="text-xl sm:text-3xl font-bold">FMCG Influencers</span>
                 </Link>
               </div>
             </div>

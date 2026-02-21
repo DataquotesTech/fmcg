@@ -146,9 +146,9 @@ export const metadata = {
   publisher: "FMCGInfluencer.com",
   metadataBase: new URL(siteUrl),
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/fmcglogo.png",
+    shortcut: "/fmcglogo.png",
+    apple: "/fmcglogo.png",
   },
   alternates: {
     canonical: "/",
@@ -164,7 +164,7 @@ export const metadata = {
       "India’s trusted platform for FMCG talent, brands, and business solutions.",
     images: [
       {
-        url: `${siteUrl}/fmcg-removebg-preview.png`,
+        url: `${siteUrl}/fmcglogo.png`,
         width: 1200,
         height: 630,
         alt: "FMCGInfluencer.com",
@@ -177,7 +177,7 @@ export const metadata = {
       "FMCGInfluencer.com - India’s trusted platform for FMCG talent, brands, and business solutions.",
     description:
       "India’s trusted platform for FMCG talent, brands, and business solutions.",
-    images: [`${siteUrl}/fmcg-removebg-preview.png`],
+    images: [`${siteUrl}/fmcglogo.png`],
   },
   robots: {
     index: true,
