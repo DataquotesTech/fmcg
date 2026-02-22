@@ -277,21 +277,21 @@ export default function Header() {
               {/* Mobile Menu Content */}
               <div className="flex flex-col h-full px-6 py-10 pb-35">
                 {/* Logo */}
-                <div className="mb-5 flex justify-center">
-                  <Link
-                    href="/"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl font-bold"
-                  >
-                    <Image
-                      width={200}
-                      height={150}
-                      src="/fmcg-removebg-preview.png"
-                      alt="FMCG Logo"
-                      className="w-32 h-auto"
-                    />
-                  </Link>
-                </div>
+                <div className="flex h-full items-center justify-center px-3 sm:px-4 md:px-6 hover:text-secondary transition-all duration-300">
+              <div className="shrink-0 px-1 sm:px-2 py-1 sm:py-2 rounded-2xl flex items-center justify-center">
+                <Link href="/" className="text-xl sm:text-3xl font-bold">
+                  <Image
+                    width={300}
+                    height={200}
+                    src="/fmcglogo.png"
+                    alt="FMCG Logo"
+                    className="w-16 sm:w-19 md:w-22 lg:w-24 h-auto pt-1 sm:pt-2"
+                  />
+                  
+                </Link>
+                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight relative top-1">FMCG Influencers</h1>
+              </div>
+            </div>
 
                 {/* Navigation Links */}
                 <nav className="flex-1 flex flex-col justify-center space-y-6">
