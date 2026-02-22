@@ -159,7 +159,7 @@ export default function Header() {
                   />
                   
                 </Link>
-                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight relative top-1">FMCG Influencers</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight relative top-1">FMCGInfluencers.com</h1>
               </div>
             </div>
 
@@ -289,7 +289,7 @@ export default function Header() {
                   />
                   
                 </Link>
-                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight relative top-1">FMCG Influencers</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-black tracking-tight relative top-1">FMCGInfluencers.com</h1>
               </div>
             </div>
 
